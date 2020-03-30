@@ -40,6 +40,7 @@ if [[ "$http" -eq 1 ]] && [[ "$https" -eq 1 ]]; then
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
 	cat http-wfuzz.txt https-wfuzz.txt > wfuzz.txt
+	sort wfuzz.txt | uniq > wfuzz.txt
 elif [[ "$http" -eq 0 ]] && [[ "$https" -eq 1 ]]; then 
 	echo "Found HTTPS, commencing with wfuzz..."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
@@ -58,8 +59,8 @@ do
 	url=$( echo "$p" | tr -d '\n' )
 	if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m may be interesting...\e[0m" ; fi
 
-	if [[ "$http" -eq 1 ]]; then echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:$http_p/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt ; fi
-	if [[ "$https" -eq 1 ]]; then echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:$https_p/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt ; fi
+	if [[ "$http" -eq 1 ]]; then echo "HTTP" ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:$http_p/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt ; fi
+	if [[ "$https" -eq 1 ]]; then echo "HTTPS" ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:$https_p/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt ; fi
 done < ../curl.txt && zenity --info --text='Curl Requests on Dirb Results Complete. Results saved.'
 cd ..
 # nikto sncans
