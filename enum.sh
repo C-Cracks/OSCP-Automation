@@ -2,7 +2,6 @@
 
 #Automation of part of the first step of enumeration- information gathering.
 #Script performs nmap vulners scan, dirb based on the results of nmap and nikto based on the same
-#Also performs a quick check for the existence of anonymous ftp access if relevant
 #May add to this as time passes and I learn more
 
 # Just some fancy banner stuff 
