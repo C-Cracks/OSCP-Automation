@@ -39,7 +39,7 @@ if [[ "$http" -eq 1 ]] && [[ "$https" -eq 1 ]]; then
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
 	cat http-wfuzz.txt https-wfuzz.txt > wfuzz.txt
-	sort wfuzz.txt | uniq > wfuzz.txt
+	sort wfuzz.txt | uniq
 elif [[ "$http" -eq 0 ]] && [[ "$https" -eq 1 ]]; then 
 	echo "Found HTTPS, commencing with wfuzz..."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
