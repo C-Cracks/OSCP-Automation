@@ -5,12 +5,16 @@
 #Also performs a quick check for the existence of anonymous ftp access if relevant
 #May add to this as time passes and I learn more
 
+# Just some fancy banner stuff 
 figlet "C-Cracks" ; figlet "Initial Enum" ; echo "Services and Web Servers"
 ip=$1 && echo -e "Target: ${ip}\nCommencing with nmap vulners scan..."
 
+# perform Nmap scan on all ports using NSE script vulners
+# Zenity creates alert boxes- removes the need to keep checking the terminal for output
 nmap -oN ./nmap-scan-results.txt --script nmap-vulners -sV ${ip} -p-  > /dev/null 2>&1 && zenity --info --text="Nmap Scan On ${ip} Complete. Results saved to nmap-scan-results.txt."
 cat ./nmap-scan-results.txt 
 
+# collect relevant ports and place into variables for use later
 http_p=$( cat ./nmap-scan-results.txt | grep "http" | grep -v "ssl" | cut -d'/' -f 1 | grep -v [A-Za-z] ) || echo "HTTP not found."
 https_p=$( cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 ) || echo "HTTPS not found."
 
@@ -30,23 +34,23 @@ case "not found" in
 		$ftp-- ;;
 	*)
 esac
-# perform dirb scans
+# perform wfuzz scans
 if [[ "$http" -eq 1 ]] && [[ "$https" -eq 1 ]]; then 
-	echo "Found HTTP and HTTPS, commencing with dirb..."
-	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-dirb.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to dirb.txt."
-	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-dirb.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to dirb.txt."
-	cat http-dirb.txt https-dirb.txt > dirb.txt
+	echo "Found HTTP and HTTPS, commencing with wfuzz..."
+	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt."
+	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
+	cat http-wfuzz.txt https-wfuzz.txt > wfuzz.txt
 elif [[ "$http" -eq 0 ]] && [[ "$https" -eq 1 ]]; then 
-	echo "Found HTTPS, commencing with dirb..."
-	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-dirb.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to dirb.txt."
+	echo "Found HTTPS, commencing with wfuzz..."
+	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
 elif [[ "$http" -eq 1 ]] && [[ "$https" -eq 0 ]]; then 
-	echo "Found HTTP, commencing with dirb..."
-	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-dirb.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to dirb.txt." 
+	echo "Found HTTP, commencing with wfuzz..."
+	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt." 
 else echo "Did not find a web server..." && exit 1
 fi
 
 # curl found results
-cat dirb.txt | grep -v "404" | grep -o '".*"' | tr -d '"' > ./curl.txt
+cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' > ./curl.txt
 
 mkdir curl-requests && cd curl-requests || cd curl-requests
 while IFS="" read -r p || [ -n "$p" ]
