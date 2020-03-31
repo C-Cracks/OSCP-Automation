@@ -6,6 +6,10 @@ A collection of personal scripts used in hacking excercises.
 
 * Very basic in nature and I'm sure there's more intuitive tools out there; I'm building my own collection of scan automation tools.
 
+## privesc.sh
+* Automation of info gathering for Linux privilege escalation
+* Can be used even if upload to the victim isn't possible as a reference
+
 ## To come(?):
 * A brute force script for web application login pages utilizing cURL
 * HTTP(S) method testing
