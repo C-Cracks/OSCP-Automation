@@ -13,4 +13,4 @@ A collection of personal scripts used in hacking excercises.
 ## To come(?):
 * A brute force script for web application login pages utilizing cURL
 * HTTP(S) method testing
-* privesc? (maybe; unsure on if this is needed... Might though!)
+* privesc for Windows (eugh...)
