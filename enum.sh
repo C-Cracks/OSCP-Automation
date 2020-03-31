@@ -2,6 +2,7 @@
 
 #Automation of part of the first step of enumeration- information gathering.
 #Script performs nmap vulners scan, dirb based on the results of nmap and nikto based on the same
+#Also performs a quick check for the existence of anonymous ftp access if relevant
 #May add to this as time passes and I learn more
 
 # Just some fancy banner stuff 
@@ -39,7 +40,6 @@ if [[ "$http" -eq 1 ]] && [[ "$https" -eq 1 ]]; then
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
 	cat http-wfuzz.txt https-wfuzz.txt > wfuzz.txt
-	sort wfuzz.txt | uniq
 elif [[ "$http" -eq 0 ]] && [[ "$https" -eq 1 ]]; then 
 	echo "Found HTTPS, commencing with wfuzz..."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
@@ -51,6 +51,7 @@ fi
 
 # curl found results
 cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' > ./curl.txt
+sort curl.txt | uniq > curl.txt
 
 mkdir curl-requests && cd curl-requests || cd curl-requests
 while IFS="" read -r p || [ -n "$p" ]
