@@ -51,7 +51,7 @@ fi
 
 # curl found results
 cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' > ./curl.txt
-sort curl.txt | uniq > curl.txt
+sort -u curl.txt > curl.txt
 
 mkdir curl-requests && cd curl-requests || cd curl-requests
 while IFS="" read -r p || [ -n "$p" ]
