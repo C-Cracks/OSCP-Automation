@@ -68,4 +68,5 @@ done
 echo -e "\e[31mMethods of upload:\e[0m" && for u in "${upload[@]}" ; do 
 	if [[ $( find / -name "${u}" )!="" ]]; then echo "$u is present." ; fi 
 done
+echo "Points not tested: port forwarding, SSH tunnelling and packet sniffing (check if no luck with any of the above!)"
 exit 0
