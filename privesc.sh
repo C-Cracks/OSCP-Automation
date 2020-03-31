@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+# based on https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/
 # Mainly info gathering- report special SUID/GUID files etc etc
 # Could download directly to victim if permissions allow or simply copy and paste into terminal hosting the connection to the victim
 
