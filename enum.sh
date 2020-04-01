@@ -51,6 +51,8 @@ fi
 
 # curl found results
 cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' > ./curl.txt
+# below line can be changed to "sort -u curl.txt > curl.txt" as pointed out by 133794m3r
+# https://github.com/133794m3r
 sort curl.txt | uniq > curl.txt
 
 mkdir curl-requests && cd curl-requests || cd curl-requests
