@@ -39,7 +39,8 @@ do
 		case "$method" in
 			"get"|"g"|"G"|"GET")
 				url=$( echo "${url}" | sed -e s/{user}/"$u"/g -e s/{pass}/"$p"/g ) 
-				if [[ $( curl -v "${url}" -s --insecure "${cookies[@]}" "${headers[@]}" 2>&1 | grep -E -- "Invalid|invalid|incorrect|wrong|Incorrect|Wrong|Fail|fail|ERROR|error" ) ]] ; then echo "$u:$p = Nope." && continue
+				if [[ $( curl -v "${url}" -s --insecure "${cookies[@]}" "${headers[@]}" 2>&1 | grep -E -- "Invalid|invalid|incorrect|wrong|Incorrect|Wrong|Fail|fail|ERROR|error" ) ]] ; then
+					echo "$u:$p = Nope." && continue
 				else echo "$u:$p = Intriguing. ;3" && exit 0
 				fi 
 				;;
