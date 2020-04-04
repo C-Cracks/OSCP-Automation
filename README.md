@@ -13,6 +13,11 @@ A collection of personal scripts used in hacking excercises.
 * Sends requests under different methods to the provided URL
 * Appearance of the output leaves alot to be desired; as long as it's clear where each request ends I don't mind. xD
 
+## brute-force.sh
+* Brute force web applications with cURL
+* Handles GET and POST requests currently with the options to add cookies and/or headers to the request
+* POST has been tested thoroughly against the VM Mr Robot with the right credentials being discovered and I have also tested the addition of headers and/or cookies.
+* Will likely discover issues with it as I use it so consider this script in beta. :)
+
 ## To come(?):
-* A brute force script for web application login pages utilizing cURL
 * privesc for Windows (eugh...)
