@@ -15,35 +15,24 @@ nmap -oN ./nmap-scan-results.txt --script nmap-vulners -sV ${ip} -p-  > /dev/nul
 cat ./nmap-scan-results.txt 
 
 # collect relevant ports and place into variables for use later
-http_p=$( cat ./nmap-scan-results.txt | grep "http" | grep -v "ssl" | cut -d'/' -f 1 | grep -v [A-Za-z] ) || echo "HTTP not found."
-https_p=$( cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 ) || echo "HTTPS not found."
+http_p=$( cat ./nmap-scan-results.txt | grep "http" | grep -v "ssl" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "HTTP not found." ) 
+https_p=$( cat ./nmap-scan-results.txt | grep "ssl/http" || echo "HTTPS not found." | cut -d'/' -f 1 )
 
-ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" | cut -d'/' -f 1 ) || echo "SSH not found."
-ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" | cut -d'/' -f 1 ) || echo "FTP not found."
+ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" || echo "SSH not found." | cut -d'/' -f 1  ) 
+ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" || echo "FTP not found." | cut -d'/' -f 1 ) 
 
 http=1 ; https=1 ; ssh=1 ; ftp=1
 
-case "not found" in 
-	"${http_p}")
-		$http-- ;;
-	"${https_p}")
-		$https-- ;;
-	"${ssh_p}")
-		$ssh-- ;;
-	"${ftp_p}")
-		$ftp-- ;;
-	*)
-esac
 # perform wfuzz scans
-if [[ "$http" -eq 1 ]] && [[ "$https" -eq 1 ]]; then 
+if [[ $( echo "$http_p" | grep -v "not found" ) ]] && [[ $( echo "$https_p" | grep -v "not found" ) ]] ; then 
 	echo "Found HTTP and HTTPS, commencing with wfuzz..."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
 	cat http-wfuzz.txt https-wfuzz.txt > wfuzz.txt
-elif [[ "$http" -eq 0 ]] && [[ "$https" -eq 1 ]]; then 
+elif [[ $( echo "$http_p" | grep "not found" ) ]]  && [[ $( echo "$https_p" | grep -v "not found" ) ]] ; then 
 	echo "Found HTTPS, commencing with wfuzz..."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:$https_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${https_p} Complete. Results saved to wfuzz.txt."
-elif [[ "$http" -eq 1 ]] && [[ "$https" -eq 0 ]]; then 
+elif [[ $( echo "$http_p" | grep -v "not found" ) ]] && [[ $( echo "$https_p" | grep "not found" ) ]]; then 
 	echo "Found HTTP, commencing with wfuzz..."
 	timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:$http_p"/FUZZ > ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${http_p} Complete. Results saved to wfuzz.txt." 
 else echo "Did not find a web server..." && exit 1
@@ -51,8 +40,6 @@ fi
 
 # curl found results
 cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' > ./curl.txt
-# below line can be changed to "sort -u curl.txt > curl.txt" as pointed out by 133794m3r
-# https://github.com/133794m3r
 sort curl.txt | uniq > curl.txt
 
 mkdir curl-requests && cd curl-requests || cd curl-requests
@@ -61,14 +48,14 @@ do
 	url=$( echo "$p" | tr -d '\n' )
 	if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m may be interesting...\e[0m" ; fi
 
-	if [[ "$http" -eq 1 ]]; then echo "HTTP" ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:$http_p/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt ; fi
-	if [[ "$https" -eq 1 ]]; then echo "HTTPS" ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:$https_p/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt ; fi
+	if [[ $( echo "$http_p" | grep -v "not found" ) ]] ; then echo "HTTP" ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:$http_p/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt ; fi
+	if [[ $( echo "$https_p" | grep -v "not found" ) ]] ; then echo "HTTPS" ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:$https_p/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt ; fi
 done < ../curl.txt && zenity --info --text='Curl Requests on Dirb Results Complete. Results saved.'
 cd ..
 # nikto sncans
 #echo "${ip} -p ${http_p}"
-if [[ "${http}" -eq 1 ]];then nikto -h "${ip}:${http_p}" -nointeractive -maxtime 360 >> nikto-results.txt && zenity --info --text='Nikto HTTP Scan Complete. Results saved to nikto-requests.txt.'; fi
-if [[ "${https}" -eq 1 ]];then nikto -h "${ip}:${https_p}" -nointeractive -maxtime 360 >> nikto-results.txt  && zenity --info --text='Nikto HTTPS Scan Complete. Results saved to nikto-requests.txt.' ; fi
+if [[ $( echo "$http_p" | grep -v "not found" ) ]] ;then nikto -h "${ip}:${http_p}" -nointeractive -maxtime 360 >> nikto-results.txt && zenity --info --text='Nikto HTTP Scan Complete. Results saved to nikto-requests.txt.'; fi
+if [[ $( echo "$https_p" | grep -v "not found" ) ]] ;then nikto -h "${ip}:${https_p}" -nointeractive -maxtime 360 >> nikto-results.txt  && zenity --info --text='Nikto HTTPS Scan Complete. Results saved to nikto-requests.txt.' ; fi
 
 cat ./nikto-results.txt 
 if cat ./nikto-results.txt | grep -E -- "wordpress|WordPress|Wordpress" > /dev/null 2>&1 ; then echo "WordPress discovered, you should run WPScan." ; fi
