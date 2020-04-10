@@ -22,7 +22,7 @@ https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" || echo "HTTPS not foun
 ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" || echo "SSH not found." | cut -d'/' -f 1  ) 
 ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" || echo "FTP not found." | cut -d'/' -f 1 ) 
 
-# run enum4linux against target if target is linux
+# run enum4linux against target if target is windows or smb is present
 if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
 
 # perform wfuzz scans
