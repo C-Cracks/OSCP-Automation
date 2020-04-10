@@ -23,7 +23,7 @@ ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" || echo "SSH not found." | cut
 ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" || echo "FTP not found." | cut -d'/' -f 1 ) 
 
 # run enum4linux against target if target is linux
-if [[ $( cat nmap-scan-results.txt | grep -E -- "linux|Linux" )  ]] ; then echo -e "\nTarget is a Linux distribution, running enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
+if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
 
 # perform wfuzz scans
 if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then 
@@ -97,11 +97,11 @@ echo -e "\e[33m\e[1mRESULTS:\e[0m\e[33m\e[0m"
 echo -e "Open Ports:\n${open_ps}" ; echo -e "Files returning 200 response (see wfuzz.txt if unsure on site.):\n${resp}\n"
 
 if [[ $( echo "${open_ps}" | grep "ftp" ) ]] ; then echo -e "FTPs present, anonymous login could be a thing...\n" ; fi
-if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then 
-	echo -e "Samba File Share present...\n" ; echo "Discovered shares:"
-	echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
-fi
+if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then echo -e "Samba File Share present...\n" ; fi
 if [[ $( echo "${open_ps}" | grep "doom" ) ]] ; then echo -e "\nUnknown service is present, check this with telnet..." ; fi
 if [[ $( cat ./curl.txt | grep -E -- "login|admin|portal|robots" ) ]] ; then echo -e "Interesting Files:\n$( cat ./curl.txt | grep -E -- 'login|admin|portal|robots' )\nSee wfuzz.txt for location of file." ; fi
-if [[ $( cat nmap-scan-results.txt | grep -E -- "Linux|linux" )  ]] ; then echo -e "\nLocal users discovered by enum4linux:\n${users}" ; fi
+if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then 
+	echo -e "\nLocal users discovered by enum4linux:\n${users}" 
+	echo "Discovered shares:" ; echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
+fi
 exit 0
