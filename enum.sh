@@ -22,6 +22,9 @@ https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" || echo "HTTPS not foun
 ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" || echo "SSH not found." | cut -d'/' -f 1  ) 
 ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" || echo "FTP not found." | cut -d'/' -f 1 ) 
 
+# run enum4linux against target if target is linux
+if [[ $( cat nmap-scan-results.txt | grep -E -- "linux|Linux" )  ]] ; then echo -e "\nTarget is a Linux distribution, running enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
+
 # perform wfuzz scans
 if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then 
 	echo "Found HTTP and HTTPS, commencing with wfuzz..."
@@ -73,6 +76,7 @@ else echo "1000+ pages found, skipping cURL (check wfuzz.txt manually.)"
 fi
 
 # nikto sncans
+echo -e "\nCommencing with Nikto Scans..."
 if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]]; then
 	for i in "${http_p[@]}"; do 
 		nikto -h "${ip}:${i}" -nointeractive -maxtime 360 >> nikto-results.txt && zenity --info --text='Nikto HTTP Scan Complete. Results saved to nikto-requests.txt.' 
@@ -86,15 +90,18 @@ fi
 
 cat ./nikto-results.txt 
 if cat ./nikto-results.txt | grep -E -- "wordpress|WordPress|Wordpress" > /dev/null 2>&1 ; then echo "WordPress discovered, you should run WPScan." ; fi
-echo "Initial enumeration complete" && ls -al |  grep -E -- "results|requests"
+echo "Initial enumeration complete" && ls -al 
 
-open_ps=$( cat ./nmap-scan-results.txt | grep "open" ) ; resp=$( cat ./wfuzz.txt | grep "  200" ) 
+open_ps=$( cat ./nmap-scan-results.txt | grep "open" ) ; resp=$( cat ./wfuzz.txt | grep "  200" ) ; users=$( cat linux-enum.txt | grep "(Local User)" ) 
 echo -e "\e[33m\e[1mRESULTS:\e[0m\e[33m\e[0m"
-echo "${open_ps}" ; echo -e "${resp}\n"
+echo -e "Open Ports:\n${open_ps}" ; echo -e "Files returning 200 response (see wfuzz.txt if unsure on site.):\n${resp}\n"
 
-if [[ $( echo "${open_ps}" | grep "ftp" ) ]] ; then echo "FTPs present, anonymous login..." ; fi
-if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then echo "Samba File Share present, enum4linux might reveal some interesting info (also will show existing users if the system is vulnerable to this enum)..." ; fi
-if [[ $( echo "${open_ps}" | grep "doom" ) ]] ; then echo "Unknown service is present, check this with telnet..." ; fi
-if [[ $( cat ./curl.txt | grep -E -- "login|admin|portal|robots" ) ]] ; then echo -e "Login, admin, robots.txt and/or portal pages discovered (see wfuzz.txt for location of file.)" ; fi
-
+if [[ $( echo "${open_ps}" | grep "ftp" ) ]] ; then echo -e "FTPs present, anonymous login could be a thing...\n" ; fi
+if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then 
+	echo -e "Samba File Share present...\n" ; echo "Discovered shares:"
+	echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
+fi
+if [[ $( echo "${open_ps}" | grep "doom" ) ]] ; then echo -e "\nUnknown service is present, check this with telnet..." ; fi
+if [[ $( cat ./curl.txt | grep -E -- "login|admin|portal|robots" ) ]] ; then echo -e "Interesting Files:\n$( cat ./curl.txt | grep -E -- 'login|admin|portal|robots' )\nSee wfuzz.txt for location of file." ; fi
+if [[ $( cat nmap-scan-results.txt | grep -E -- "Linux|linux" )  ]] ; then echo -e "\nLocal users discovered by enum4linux:\n${users}" ; fi
 exit 0
