@@ -1,6 +1,6 @@
 # OSCP-Automation
 A collection of personal scripts used in hacking excercises.
-https://www.tumblr.com/blog/c-cracks
+https://c-cracks.tumblr.com/
 
 ## enum.sh
 * Performs an Nmap scan on the provided IP and further Wfuzz and Nikto scans on discovered web servers (HTTP and HTTPS are treated as seperate entities as -realistically- one could hold vulnerabilities/directories the other doesn't)
