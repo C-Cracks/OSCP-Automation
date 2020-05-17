@@ -29,30 +29,30 @@ if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then echo -
 if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then 
 	echo "Found HTTP and HTTPS, commencing with wfuzz..."
 	for i in "${http_p[@]}"; do
-		timeout 360 wfuzz --hc 404 -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ > ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
+		timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ >> ./http-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.txt >> ./http-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.php >> ./http-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.log >> ./http-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.html >> ./http-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
 	done
 	for i in "${https_p[@]}"; do
-		timeout 360 wfuzz --hc 404 -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ >> ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
+		timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ >> ./https-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.txt >> ./https-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.php >> ./https-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.log >> ./https-wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.html >> ./https-wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
 	done
 	cat http-wfuzz.txt https-wfuzz.txt > wfuzz.txt
 	
 elif [[ $( echo "${http_p[@]}" | grep "not found" ) ]]  && [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then 
 	echo "Found HTTPS, commencing with wfuzz..."
 	for i in "${https_p[@]}"; do
-		timeout 360 wfuzz --hc 404 -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ >> ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
+		timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.txt >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.php >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.log >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.html >> ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
 	done
 	
 elif [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https_p[@]}" | grep "not found" ) ]]; then 
 	echo "Found HTTP, commencing with wfuzz..."
 	for i in "${http_p[@]}"; do
-		timeout 360 wfuzz --hc 404 -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ >> ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
+		timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.txt >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.php >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.log >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.html >> ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
 	done
 	
 else echo "Did not find a web server..." && exit 1
 fi
 
 # curl found results
-cat wfuzz.txt | grep -o '".*"' | tr -d '"' | uniq > curl.txt
+cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | uniq > curl.txt
 
 if [[ $( cat ./curl.txt | wc -l ) -lt 1000 ]] ; then
 	while IFS="" read -r p || [ -n "$p" ]
