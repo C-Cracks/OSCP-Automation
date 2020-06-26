@@ -19,9 +19,6 @@ cat ./nmap-scan-results.txt
 http_p=( `cat ./nmap-scan-results.txt | grep "http" | grep -v "ssl" | grep -v "over" | grep -v "HTTPAPI" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "HTTP not found."` )
 https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "HTTPS not found."` )
 
-ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" || echo "SSH not found." | cut -d'/' -f 1  ) 
-ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" || echo "FTP not found." | cut -d'/' -f 1 ) 
-
 # run enum4linux against target if target is linux
 if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
 
@@ -51,7 +48,7 @@ elif [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https
 else echo "Did not find a web server..." && web_server="false"
 fi
 
-if [ -z ${web_server} ] ; then
+if ! [[ -v $web_server ]] ; then
 	# curl found results
 	cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | uniq > curl.txt
 
@@ -100,10 +97,13 @@ echo -e "Open Ports:\n${open_ps}"
 if [[ $( cat ./curl.txt | wc -l ) -lt 1000 ]] ; then echo -e "\nFiles returning 200 response (see wfuzz.txt if unsure on site.):\n${resp}\n" && if [[ $( cat ./curl.txt | grep -E -- "login|admin|portal|robots" ) ]] ; then echo -e "Interesting Files:\n$( cat ./curl.txt | grep -E -- 'login|admin|portal|robots' )\nSee wfuzz.txt for location of file." ; fi ; fi
 
 if [[ $( echo "${open_ps}" | grep "ftp" ) ]] ; then echo -e "FTPs present, anonymous login could be a thing...\n" ; fi
-if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then echo -e "Samba File Share present...\n" ; fi
 if [[ $( echo "${open_ps}" | grep "doom" ) ]] ; then echo -e "\nUnknown service is present, check this with telnet..." ; fi
-if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then 
+if [[ $( echo "${open_ps}" | grep "ssh" ) ]] ; then echo -e "\nSSH present, check version for vulnerabilities (7.2p2 vulnerable to user enum, for example.)" ; fi
+if [[ $( echo "${open_ps}" | grep "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)" ; fi
+if [[ $( echo "${open_ps}" | grep "ldap" ) ]] ; then echo -e "\nActive Directory runs on this machine, relevant scripts:\n  getadusers.py (reveal stats about users if there's alot to enumerate- e.g. last logon)\n  ldap-search.nse- nmap (perform an LDAP search and return found objects such as SMB shares and users)" ; fi
+if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then 
 	users=$( cat linux-enum.txt | grep -E -- "user:[|Local User" ) 
+	echo -e "Samba File Share present...Check ./linux-enum.txt for further information.\n  Check version for vulnerabilities and execute smb-vuln scripts with nmap (smb-vuln*)" 
 	echo -e "\nLocal users discovered by enum4linux:\n${users}" 
 	echo "Discovered shares:" ; echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
 fi
