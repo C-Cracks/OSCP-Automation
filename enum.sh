@@ -99,7 +99,7 @@ if [[ $( cat ./curl.txt | wc -l ) -lt 1000 ]] ; then echo -e "\nFiles returning 
 if [[ $( echo "${open_ps}" | grep "ftp" ) ]] ; then echo -e "FTPs present, anonymous login could be a thing...\n" ; fi
 if [[ $( echo "${open_ps}" | grep "doom" ) ]] ; then echo -e "\nUnknown service is present, check this with telnet..." ; fi
 if [[ $( echo "${open_ps}" | grep "ssh" ) ]] ; then echo -e "\nSSH present, check version for vulnerabilities (7.2p2 vulnerable to user enum, for example.)" ; fi
-if [[ $( echo "${open_ps}" | grep "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)" ; fi
+if [[ $( echo "${open_ps}" | grep "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set, asreproast)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)\n  gettgt.py (pass the hash, requires valid user with specific permissions)" ; fi
 if [[ $( echo "${open_ps}" | grep "ldap" ) ]] ; then echo -e "\nActive Directory runs on this machine, relevant scripts:\n  getadusers.py (reveal stats about users if there's alot to enumerate- e.g. last logon)\n  ldap-search.nse- nmap (perform an LDAP search and return found objects such as SMB shares and users)" ; fi
 if [[ $( echo "${open_ps}" | grep "smbd" ) ]] ; then 
 	users=$( cat linux-enum.txt | grep -E -- "user:[|Local User" ) 
