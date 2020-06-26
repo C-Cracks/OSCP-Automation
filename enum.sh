@@ -7,7 +7,7 @@
 
 # Just some fancy banner stuff 
 figlet "C-Cracks" ; figlet "Initial Enum" ; echo "Services and Web Servers"
-ip=$1 && echo -e "Target: ${ip}\nCommencing with nmap vulners scan..."
+ip=$1 && echo -e "Target: ${ip}\nCommencing with nmap scan..."
 
 # perform Nmap scan on all ports using NSE script vulners
 # Zenity creates alert boxes- removes the need to keep checking the terminal for output
@@ -17,7 +17,7 @@ cat ./nmap-scan-results.txt
 # collect relevant ports and place into variables for use later
 # if more than 1 port returned, append to array, else continue with orig execution
 http_p=( `cat ./nmap-scan-results.txt | grep "http" | grep -v "ssl" | grep -v "over" | grep -v "HTTPAPI" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "HTTP not found."` )
-https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" || echo "HTTPS not found." | cut -d'/' -f 1` )
+https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "HTTPS not found."` )
 
 ssh_p=$( cat ./nmap-scan-results.txt | grep "ssh" || echo "SSH not found." | cut -d'/' -f 1  ) 
 ftp_p=$( cat ./nmap-scan-results.txt | grep "ftp" || echo "FTP not found." | cut -d'/' -f 1 ) 
@@ -48,44 +48,46 @@ elif [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https
 		timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.txt >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.php >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.log >> ./wfuzz.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.html >> ./wfuzz.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to wfuzz.txt." ; sleep 1
 	done
 	
-else echo "Did not find a web server..." && exit 1
+else echo "Did not find a web server..." && web_server="false"
 fi
 
-# curl found results
-cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | uniq > curl.txt
+if [ -z ${web_server} ] ; then
+	# curl found results
+	cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | uniq > curl.txt
 
-if [[ $( cat ./curl.txt | wc -l ) -lt 1000 ]] ; then
-	while IFS="" read -r p || [ -n "$p" ]
-	do
-		url=$( echo "$p" | tr -d '\n' )
-		if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m may be interesting...\e[0m" ; fi
+	if [[ $( cat ./curl.txt | wc -l ) -lt 1000 ]] ; then
+		while IFS="" read -r p || [ -n "$p" ]
+		do
+			url=$( echo "$p" | tr -d '\n' )
+			if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m may be interesting...\e[0m" ; fi
 
-		if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] ; then
-			for i in "${http_p[@]}"; do
-				echo "HTTP port ${i}" ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:${i}/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt 
-			done 
-		fi
-		
-		if [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then
-			for i in "${https_p[@]}"; do
-				echo "HTTPS port ${i}" ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:${i}/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt 
-			done
-		fi
-	done < ./curl.txt && zenity --info --text='Curl Requests on Dirb Results Complete. Results saved.'
-else echo "1000+ pages found, skipping cURL (check wfuzz.txt manually.)"
-fi
+			if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] ; then
+				for i in "${http_p[@]}"; do
+					echo "HTTP port ${i}" ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:${i}/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt 
+				done 
+			fi
+			
+			if [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then
+				for i in "${https_p[@]}"; do
+					echo "HTTPS port ${i}" ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:${i}/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt 
+				done
+			fi
+		done < ./curl.txt && zenity --info --text='Curl Requests on Dirb Results Complete. Results saved.'
+	else echo "1000+ pages found, skipping cURL (check wfuzz.txt manually.)"
+	fi
 
-# nikto sncans
-echo -e "\nCommencing with Nikto Scans..."
-if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]]; then
-	for i in "${http_p[@]}"; do 
-		echo "no" | nikto -h "${ip}:${i}" -nointeractive -maxtime 360 >> nikto-results.txt && zenity --info --text='Nikto HTTP Scan Complete. Results saved to nikto-requests.txt.' 
-	done
-fi
-if [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ;then
-	for i in "${https_p[@]}"; do
-		echo "no" | nikto -h "${ip}:${i}" -nointeractive -maxtime 360 >> nikto-results.txt  && zenity --info --text='Nikto HTTPS Scan Complete. Results saved to nikto-requests.txt.' 
-	done
+	# nikto sncans
+	echo -e "\nCommencing with Nikto Scans..."
+	if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]]; then
+		for i in "${http_p[@]}"; do 
+			echo "no" | nikto -h "${ip}:${i}" -nointeractive -maxtime 360 >> nikto-results.txt && zenity --info --text='Nikto HTTP Scan Complete. Results saved to nikto-requests.txt.' 
+		done
+	fi
+	if [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ;then
+		for i in "${https_p[@]}"; do
+			echo "no" | nikto -h "${ip}:${i}" -nointeractive -maxtime 360 >> nikto-results.txt  && zenity --info --text='Nikto HTTPS Scan Complete. Results saved to nikto-requests.txt.' 
+		done
+	fi
 fi
 
 cat ./nikto-results.txt 
