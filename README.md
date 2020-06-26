@@ -1,9 +1,10 @@
 # OSCP-Automation
 A collection of personal scripts used in hacking excercises.
+Consider a majority of them in beta- useable but I will probably improve them as time goes on. :)
 https://c-cracks.tumblr.com/
 
 ## enum.sh
-* Performs an Nmap scan on the provided IP and further Wfuzz and Nikto scans on discovered web servers (HTTP and HTTPS are treated as seperate entities as -realistically- one could hold vulnerabilities/directories the other doesn't)
+* Performs an Nmap scan on the provided IP and further Wfuzz and Nikto scans on discovered web servers (per port found to be a web server)
 * Very basic in nature and I'm sure there's more intuitive tools out there; I'm building my own collection of scan automation tools.
 
 ## privesc.sh
@@ -18,8 +19,7 @@ https://c-cracks.tumblr.com/
 * Brute force web applications with cURL
 * Handles GET and POST requests currently with the options to add cookies and/or headers to the request
 * POST has been tested thoroughly against the VM Mr Robot with the right credentials being discovered and I have also tested the addition of headers and/or cookies.
-* Will likely discover issues with it as I use it so consider this script in beta. :)
 
 ## To come(?):
 * privesc for Windows (eugh...)
-  * This will likely come in a few weeks as I'll likely do this when I'm hacking a Windows machine.
+  * This will likely come in a few weeks.
