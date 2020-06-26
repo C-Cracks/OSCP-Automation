@@ -56,7 +56,7 @@ if ! [[ -v $web_server ]] ; then
 			if [[ $( cat ./http-curl${i}.txt | wc -l ) -lt 1000 ]] ; then
 				while IFS="" read -r p || [ -n "$p" ] ; do
 					url=$( echo "$p" | tr -d '\n' )
-					echo "HTTP port ${i}" ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:${i}/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt
+					echo "HTTP port ${i}" >> ./http-curl.txt ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:${i}/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt
 					if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m on HTTP port ${i} may be interesting...\e[0m" ; fi
 				done < ./http-curl${i}.txt && zenity --info --text="HTTP port ${i} cURL Requests on wfuzz Results Complete. Results saved."
 			else echo "1000+ pages found, skipping cURL (check http-wfuzz${i}.txt manually.)"
@@ -71,7 +71,7 @@ if ! [[ -v $web_server ]] ; then
 			if [[ $( cat ./https-curl${i}.txt | wc -l ) -lt 1000 ]] ; then
 				while IFS="" read -r p || [ -n "$p" ] ; do
 					url=$( echo "$p" | tr -d '\n' )
-					echo "HTTPS port ${i}" ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:${i}/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt
+					echo "HTTPS port ${i}" >> ./https-curl.txt ; echo -e "$p\n" >> ./https-curl.txt && curl --insecure "https://${ip}:${i}/$url/" >> ./https-curl.txt && echo -e "\n\n" >> ./https-curl.txt
 					if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m on HTTPS port ${i} may be interesting...\e[0m" ; fi
 				done < ./https-curl${i}.txt  && zenity --info --text="HTTPS port ${i} cURL Requests on wfuzz Results Complete. Results saved."
 			else echo "1000+ pages found, skipping cURL (check https-wfuzz${i}.txt manually.)"
