@@ -50,7 +50,7 @@ fi
 
 if ! [[ -v $web_server ]] ; then
 	# curl found results
-	cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | uniq > curl.txt
+	cat wfuzz.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | sort -u ./curl.txt
 
 	if [[ $( cat ./curl.txt | wc -l ) -lt 1000 ]] ; then
 		while IFS="" read -r p || [ -n "$p" ]
