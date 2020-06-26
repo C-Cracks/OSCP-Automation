@@ -23,6 +23,7 @@ https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 | grep
 if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
 
 # perform wfuzz scans
+# now performed for each port found to hold a web server and saved in a seperate file per port
 if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https_p[@]}" | grep -v "not found" ) ]] ; then 
 	echo "Found HTTP and HTTPS, commencing with wfuzz..."
 	for i in "${http_p[@]}"; do
@@ -43,12 +44,14 @@ elif [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] && [[ $( echo "${https
 	for i in "${http_p[@]}"; do
 		timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ >> ./http-wfuzz${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.txt >> ./http-wfuzz${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.php >> ./http-wfuzz${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.log >> ./http-wfuzz${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.html >> ./http-wfuzz${i}.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to http-wfuzz${i}.txt." ; sleep 1
 	done
-	
+# no longer exits when a web server hasn't been found as it can create more work when targets are mainly domain controllers or file shares	
 else echo "Did not find a web server..." && web_server="false"
 fi
 
 if ! [[ -v $web_server ]] ; then
 	# curl found results
+	# check http-wfuzz${i}.txt for all results found on port i along with status of responses and http-curl.txt for a summary of results from all HTTP ports
+	# same for https with relevant part of filenames changed to https
 	if [[ $( echo "${http_p[@]}" | grep -v "not found" ) ]] ; then
 		
 		for i in "${http_p[@]}"; do
@@ -57,6 +60,7 @@ if ! [[ -v $web_server ]] ; then
 				while IFS="" read -r p || [ -n "$p" ] ; do
 					url=$( echo "$p" | tr -d '\n' )
 					echo "HTTP port ${i}" >> ./http-curl.txt ; echo -e "$p\n" >> ./http-curl.txt && curl "http://${ip}:${i}/$url/" >> ./http-curl.txt && echo -e "\n\n" >> ./http-curl.txt
+					# flagging interesting files
 					if echo "$p" | grep -E -- "login|admin|portal|robots" > /dev/null 2>&1 ; then echo -e "\e[33m\e[1m$p\e[0m\e[33m on HTTP port ${i} may be interesting...\e[0m" ; fi
 				done < ./http-curl${i}.txt && zenity --info --text="HTTP port ${i} cURL Requests on wfuzz Results Complete. Results saved."
 			else echo "1000+ pages found, skipping cURL (check http-wfuzz${i}.txt manually.)"
@@ -98,6 +102,7 @@ cat ./nikto-results.txt
 if cat ./nikto-results.txt | grep -E -- "wordpress|WordPress|Wordpress" > /dev/null 2>&1 ; then echo "WordPress discovered, you should run WPScan." ; fi
 echo "Initial enumeration complete" && ls -al 
 
+# summary of findings, could be copied and pasted into a file
 open_ps=$( cat ./nmap-scan-results.txt | grep "open" )  
 echo -e "\e[33m\e[1mRESULTS:\e[0m\e[33m\e[0m"
 echo -e "Open Ports:\n${open_ps}" 
