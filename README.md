@@ -23,6 +23,3 @@ https://c-cracks.tumblr.com/
 ## To come(?):
 * privesc for Windows (eugh...)
   * This will likely come in a few weeks as I'll likely do this when I'm hacking a Windows machine.
-* Improvements to enum.sh
-  * Flag ports 5985 and 5986 (remote shell can be established through WinRM, reminder of evil-rm )
-  * Flag kerberos service (Kerberoasting|ASREPRoasting|DC sync attacks for pass the hash - include Impacket scripts to use)
