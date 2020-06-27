@@ -20,7 +20,7 @@ http_p=( `cat ./nmap-scan-results.txt | grep "http" | grep -v "ssl" | grep -v "o
 https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "HTTPS not found."` )
 
 # run enum4linux against target if target is linux
-if [[ $( cat nmap-scan-results.txt | grep -E -- "smb|windows" ) ]] ; then echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
+if [[ $( cat nmap-scan-results.txt | grep -E -- "smb" ) ]] ; then echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt ; fi
 
 # perform wfuzz scans
 # now performed for each port found to hold a web server and saved in a seperate file per port
