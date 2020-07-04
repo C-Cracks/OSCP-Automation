@@ -127,7 +127,7 @@ if [[ $( echo "${open_ps}" | grep "ssh" ) ]] ; then echo -e "\nSSH present, chec
 if [[ $( echo "${open_ps}" | grep "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set, asreproast)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)\n  gettgt.py (pass the hash, requires valid user with specific permissions)" ; fi
 if [[ $( echo "${open_ps}" | grep "ldap" ) ]] ; then echo -e "\nActive Directory runs on this machine, relevant scripts:\n  getadusers.py (reveal stats about users if there's alot to enumerate- e.g. last logon)\n  ldap-search.nse- nmap (perform an LDAP search and return found objects such as SMB shares and users)" ; fi
 if [[ $( echo "${open_ps}" | grep -E -- "smb|microsoft-ds" ) ]] ; then 
-	users=$( cat linux-enum.txt | grep -E -- "user:[|Local User" ) 
+	users=$( cat linux-enum.txt | grep -E -- "user:\[|Local User" ) 
 	echo -e "Samba File Share present...Check ./linux-enum.txt for further information.\n  Check version for vulnerabilities and execute smb-vuln scripts with nmap (smb-vuln*)" 
 	echo -e "\nLocal users discovered by enum4linux:\n${users}" 
 	echo "Discovered shares:" ; echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
