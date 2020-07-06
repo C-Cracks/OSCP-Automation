@@ -11,3 +11,8 @@ net localgroup groupname username /add
 net user user password
   change user pass
   
+netstat -ano 
+  running processes on machine
+  
+systeminfo
+  OS version | patches
