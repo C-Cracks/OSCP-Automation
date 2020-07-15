@@ -1,0 +1,7 @@
+Admin portal LFI
+  https://nets.ec/Coldfusion_hacking
+  
+Scheduled Tasks RFI (rev shell through JSP or webshell through CFM)
+  Ensure publish is ticked
+  Check web directory through mappings
+  Check settings summary for upload directoory
