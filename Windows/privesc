@@ -1,0 +1,12 @@
+1. Who do we have access as?
+  set | whoami /all
+  
+2. Do we have the ability to access Administrator files?
+  dir \Users\Administrator
+  
+3. How can we transfer files?
+  https://www.abatchy.com/2017/03/powershell-download-file-one-liners | wget | certutil | curl | smb | ftp
+
+4. Check for weak config
+  https://pentest.tonyng.net/windows-privilege-escalation-a-cheatsheet/
+  whoami /priv | net user username 
