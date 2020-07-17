@@ -1,13 +1,13 @@
 # OSCP-Automation
-A collection of personal scripts used in hacking excercises.
-Consider a majority of them in beta- useable but I will probably improve them as time goes on. :)
+A collection of personal scripts used in hacking excercises. Consider a majority of them in beta- useable but I will probably improve them as time goes on. :)
+There's also some notes on web app and OS vulnerabilties, in addition to pointers for useful commands etc.
 https://c-cracks.tumblr.com/
 
 ## enum.sh
 * Performs an Nmap scan on the provided IP and further Wfuzz and Nikto scans on discovered web servers (per port found to be a web server)
 * Very basic in nature and I'm sure there's more intuitive tools out there; I'm building my own collection of scan automation tools.
 
-## privesc.sh
+## Linux/privesc.sh
 * Automation of info gathering for Linux privilege escalation
 * Can be used even if upload to the victim isn't possible as a reference
 
