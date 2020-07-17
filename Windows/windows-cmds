@@ -1,0 +1,21 @@
+dir \ /s/b file.txt
+  recursively search for file
+  
+set
+  print environment variables (normal users: \Document and Settings\user or \Users\user, system users C:\WINDOWS\system32\config\systemprofile)
+  Will need to deduct which user we are based off this if it's an early instance of Windows
+  
+net localgroup groupname username /add
+  add user to localgroup
+  
+net user user password
+  change user pass
+  
+netstat -ano 
+  running processes on machine
+  
+systeminfo
+  OS version | patches
+  
+findstr /spin "password" *.*
+  check all files for the string password
