@@ -19,7 +19,3 @@ https://c-cracks.tumblr.com/
 * Brute force web applications with cURL
 * Handles GET and POST requests currently with the options to add cookies and/or headers to the request
 * POST has been tested thoroughly against the VM Mr Robot with the right credentials being discovered and I have also tested the addition of headers and/or cookies.
-
-## To come(?):
-* privesc for Windows (eugh...)
-  * This will likely come in a few weeks.
