@@ -1,0 +1,2 @@
+nikto shows what directories are publicly viewable
+  check for administrators.pwd, authors.pwd, service.pwd & users.pwd
