@@ -56,10 +56,10 @@ echo -e "\e[31mMounted filesystems:\e[0m" && df -h ; echo -e "\e[31mUnmounted fi
 echo -e "\e[31mFiles with sticky bit:\e[0m" && find / -perm -1000 -type d 2>/dev/null 
 echo -e "\e[31mFiles run as group, not user:\e[0m" && find / -perm -g=s -type f 2>/dev/null
 echo -e "\e[31mFiles run as owner, not user:\e[0m" && find / -perm -u=s -type f 2>/dev/null
+# /bin/cp: can overwrite any file with a file of our choice- /etc/passwd is a good target
 echo -e "\e[31mWorld writeable files:\e[0m" && find / -writable 2>/dev/null
 echo -e "\e[31mWorld executable files:\e[0m" && find / -perm -o x 2>/dev/null
 echo -e "\e[31mFiles with no owner:\e[0m" && find / -xdev \( -nouser -o -nogroup \) -print
-
 echo -e "\e[31mPrepare & Find Exploit Code\e[0m"
 tools=("perl*" "python*" "gcc*" "cc") ; upload=("wget" "nc*" "netcat*" "tftp*" "ftp")
 echo -e "\e[31mSupported Languages:\e[0m" && for t in "${tools[@]}" ; do 
