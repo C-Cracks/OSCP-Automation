@@ -1,0 +1,4 @@
+LFI/RFI in /slogin_lib.inc.php?slogin_path=<FILE>
+Credentials leak via /slog_users.txt
+
+https://vulners.com/exploitdb/EDB-ID:7444
