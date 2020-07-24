@@ -19,3 +19,14 @@ systeminfo
   
 findstr /spin "password" *.*
   check all files for the string password
+  
+tasklist /v
+  Show currently running processes and user running it
+  
+cmdkey /list
+  Show stored credentials
+  
+https://www.abatchy.com/2017/03/powershell-download-file-one-liners
+  powershell download oneliners
+  
+
