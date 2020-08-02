@@ -4,3 +4,7 @@ SQL injection: http://IP:PORT/php/index.php?tg=admoc&idx=octypes&action=delete_t
 ------
 Files uploaded via File Manager stored roughly at /upload/fileManager/collectives/DG0/FOLDERNAME/FILENAME
   If errors appear when creating file, check site file upload config as it may be invalid for some reason.
+------
+Default creds:
+nickname = admin@admin.bab
+password = 012345678
