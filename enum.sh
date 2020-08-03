@@ -11,7 +11,7 @@ ip=$1 && echo -e "Target: ${ip}\nCommencing with nmap scan..."
 
 # perform Nmap scan on all ports using NSE script vulners
 # Zenity creates alert boxes- removes the need to keep checking the terminal for output
-nmap -oN ./nmap-scan-results.txt -Pn -T4 -sC -sV ${ip} -p-  > /dev/null 2>&1 && zenity --info --text="Nmap Scan On ${ip} Complete. Results saved to nmap-scan-results.txt." || echo "Try appending -Pn flag to nmap command- might be blocking ping probes."
+nmap -oN ./nmap-scan-results.txt -Pn -sV ${ip} -p- > /dev/null 2>&1 && zenity --info --text="Nmap Scan On ${ip} Complete. Results saved to nmap-scan-results.txt." || echo "Try appending -Pn flag to nmap command- might be blocking ping probes."
 cat ./nmap-scan-results.txt 
 
 # collect relevant ports and place into variables for use later
@@ -21,8 +21,8 @@ https_p=( `cat ./nmap-scan-results.txt | grep "ssl/http" | cut -d'/' -f 1 | grep
 smb_p=( `cat ./nmap-scan-results.txt | grep -E -- "smb|microsoft-ds" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "SMB not found"` )
 # run enum4linux against target if target is linux
 
-if [[ $( echo "$smb_p" | grep -v "not found" ) ]] ; then
-	echo -e "\nRunning enum4linux..." ; enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt
+if [[ ! $( echo "$smb_p" | grep "not found" ) ]] ; then
+	echo -e "\nRunning enum4linux..." ; timeout 300s enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt
 	echo -e "\nScanning for SMB vulnerabilities..." ; nmap -oN ./nmap-smb-vulns.txt --script smb-vuln* ${ip} -p ${smb_p} && cat nmap-smb-vulns.txt
 fi
 
@@ -46,7 +46,7 @@ fi
 	
 if [[ ! -z "$http" ]] && [[ ! -z "$https" ]]; then echo "Did not find a web server..." && web_server="false"; fi
 
-if ! [[ -v $web_server ]] ; then
+if ! [[ -v "$web_server" ]] ; then
 	# curl found results
 	if [[ -z "$http" ]]; then
 		
@@ -91,10 +91,10 @@ if ! [[ -v $web_server ]] ; then
 			echo "no" | nikto -h "${ip}:${i}" -nointeractive -maxtime 360 >> nikto-results.txt  && zenity --info --text="Nikto HTTPS Scan for port ${i} Complete. Results saved to nikto-requests.txt."
 		done
 	fi
+	cat ./nikto-results.txt 
+	if cat ./nikto-results.txt | grep -E -- "wordpress|WordPress|Wordpress" > /dev/null 2>&1 ; then echo "WordPress discovered, you should run WPScan." ; fi
 fi
 
-cat ./nikto-results.txt 
-if cat ./nikto-results.txt | grep -E -- "wordpress|WordPress|Wordpress" > /dev/null 2>&1 ; then echo "WordPress discovered, you should run WPScan." ; fi
 echo "Initial enumeration complete" && ls -al 
 
 open_ps=$( grep "open" ./nmap-scan-results.txt )  
@@ -127,7 +127,7 @@ if [[ $( echo "${open_ps}" | grep "ssh" ) ]] ; then echo -e "\nSSH present, chec
 if [[ $( echo "${open_ps}" | grep "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set, asreproast)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)\n  gettgt.py (pass the hash, requires valid user with specific permissions)" ; fi
 if [[ $( echo "${open_ps}" | grep "ldap" ) ]] ; then echo -e "\nActive Directory runs on this machine, relevant scripts:\n  getadusers.py (reveal stats about users if there's alot to enumerate- e.g. last logon)\n  ldap-search.nse- nmap (perform an LDAP search and return found objects such as SMB shares and users)" ; fi
 
-if [[ $( echo "$smb_p" | grep -v "not found" ) ]] ; then 
+if [[ ! $( echo "$smb_p" | grep "not found" ) ]] ; then 
 	users=$( cat linux-enum.txt | grep -E -- "user:\[|Local User" ) 
 	echo -e "Samba File Share present...Check ./linux-enum.txt for further information.\n  Check version for vulnerabilities and execute smb-vuln scripts with nmap (smb-vuln*)" 
 	echo -e "\nLocal users discovered by enum4linux:\n${users}" 
