@@ -1,0 +1,81 @@
+Open ports
+
+
+
+
+
+
+
+
+Vulnerability Scans
+SMB | SMTP
+
+
+
+
+
+
+
+
+Scan Review
+enum4linux | nikto | nmap
+
+
+
+
+
+
+
+---------------------
+Web Server
+review http-curl.txt | manual check of pages for input points (check for SQL injection and XSS) | search for default credentials
+note anything interesting like emails, usernames etc | dirbuster if nothing interesting found immediately
+
+
+
+
+
+
+
+FTP/SMB
+If anon access is allowed, do we have write privileges?
+
+
+
+
+
+
+
+
+POP3 | IMAPD | SMTPD
+can users be enumerated?
+
+
+
+
+
+
+
+
+SQL
+Accessible with default credentials?
+
+
+
+
+
+
+
+
+
+Brute force
+To be attempted after all the above
+Only likely if a username has been discovered
+
+
+
+
+
+
+----------------
+OS and kernel version? | architecture? | current user privileges/groups | are there other users on the system? | interesting files on web server | root running processes | SUID/SGID/world writeable files | easily discoverable passwords? | writeable services? 
