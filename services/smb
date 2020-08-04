@@ -1,0 +1,3 @@
+smb-vuln scans via nmap
+---
+If the version is 2.x or prior, it's worth trying https://www.exploit-db.com/exploits/10
