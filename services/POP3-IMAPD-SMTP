@@ -1,0 +1,3 @@
+User enum possible via RCPT, VRFY and others
+e.g:
+  smtp-user-enum -M RCPT -u USER -t IP
