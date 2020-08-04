@@ -1,4 +1,4 @@
-process runs as root- whatever we do will be with root privilege
+process runs as root usually- whatever we do will be with root privilege
 
 if usermin vulnerability is present -and we have access to the server- we have root
 
