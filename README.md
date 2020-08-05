@@ -7,6 +7,8 @@ https://c-cracks.tumblr.com/
 * Performs an Nmap scan on the provided IP and further Wfuzz and Nikto scans on discovered web servers (per port found to be a web server)
 * Very basic in nature and I'm sure there's more intuitive tools out there; I'm building my own collection of scan automation tools.
 * Coming along but I'm experiencing performance issues around the nmap scan- it's commonly hanging for me. Feel free to tweak this for your needs; I'll be working      on this soon.
+* Have taken this while I work on some errors I made in the last edit.
+* Currently in the OSCP labs so it may have took me a while to notice (did all the scans first.)
 
 ## Linux/privesc.sh
 * Automation of info gathering for Linux privilege escalation
