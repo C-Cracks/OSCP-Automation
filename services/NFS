@@ -1,0 +1,6 @@
+If this service is present, first check for mountable directories     showmount -e IP
+Mount the directory using       mount -t nfs -o vers=3 IP:/DIR/ /mnt/name
+
+Pay attention to UIDs/GIDs needed to access files & directories- we mayneed to create a user and change these factors for the ability to read and write.
+Once enumerated for information, check what directories are writeable.
+  e.g: having write access to a user directory could allow us entry if SSH is active as we can add a public key to authorized_keys
