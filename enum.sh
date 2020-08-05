@@ -139,7 +139,7 @@ fi
 
 if [[ $( echo "${open_ps}" | grep "ms-wbt-server" ) ]] ; then echo -e "RDP present- brute force attack via ncrack or crowbar." ; fi
 if [[ $( echo "${open_ps}" | grep "gunicorn" ) ]] ; then echo -e "Gunicorn uses Python.\n  Think pickle deserialization and RCE." ; fi
-if [[ $( echo "${open_ps}" | grep "apache" ) ]] ; then echo -e "Apache means likely PHP/SQL\n  Check for SQL injection and CGI-Bin files." ; fi
+if [[ $( echo "${open_ps}" | grep "Apache" ) ]] ; then echo -e "Apache means likely PHP/SQL\n  Check for SQL injection and CGI-Bin files." ; fi
 if [[ $( echo "${open_ps}" | grep "IIS" ) ]] ; then echo -e "IIS means likely ASP/ASPX." ; fi
 
 exit 0
