@@ -1,0 +1,5 @@
+Versions < 1.290 are vulnerable to LFI- as the process runs under root privilege
+  Can access root SSH key information or view /etc/passwd and crack with John
+  
+If this succeeds, we either have root access or the ability to execute code as root (due to having access to a normal user account)
+  Upload a pl file and execute via the LFI vuln.
