@@ -1,0 +1,4 @@
+Default password is admin
+
+Version 1.9.3 allows for RCE when adding a table to a database
+  In the default value or as a value
