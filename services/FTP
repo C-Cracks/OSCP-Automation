@@ -1,0 +1,2 @@
+Check for useful commands if write access isn't allowed
+  e.g. append can give us the ability to upload files to the FTP server or to add text to existing pages
