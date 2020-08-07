@@ -1,0 +1,12 @@
+Reverse shells
+https://book.hacktricks.xyz/shells/shells/untitled
+https://securitynuggets.co.uk/msfvenom-payload
+Includes powershell: https://hackersinterview.com/oscp/reverse-shell-one-liners-oscp-cheatsheet/
+
+Powershell
+rev shell one-liner:  https://gist.github.com/egre55/c058744a4240af6515eb32b2d33fbed3
+Download files one-liners:  https://www.abatchy.com/2017/03/powershell-download-file-one-liners
+
+Windows Privesc
+https://book.hacktricks.xyz/windows/windows-local-privilege-escalation
+https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_windows.html
