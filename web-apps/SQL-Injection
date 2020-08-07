@@ -5,5 +5,8 @@ UNION Injection
   
   Oracle: k' UNION SELECT table_name,null,null FROM all_tables--
   
-Oracle
+Good general guides (all included at top of page-Oracle|MSSQL|MySQL|PostgreSQL)
 http://pentestmonkey.net/cheat-sheet/sql-injection/oracle-sql-injection-cheat-sheet
+
+MS-SQL
+https://www.exploit-db.com/papers/12975
