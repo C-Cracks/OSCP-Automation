@@ -1,0 +1,9 @@
+UNION Injection
+  If input is returned to you on the page
+  Have to first confirm number of columns returned via order by (valid-val' order by 3--)
+    Once confirmed, then test which columns are off string type via concat functions
+  
+  Oracle: k' UNION SELECT table_name,null,null FROM all_tables--
+  
+Oracle
+http://pentestmonkey.net/cheat-sheet/sql-injection/oracle-sql-injection-cheat-sheet
