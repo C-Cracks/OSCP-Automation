@@ -10,3 +10,9 @@ Download files one-liners:  https://www.abatchy.com/2017/03/powershell-download-
 Windows Privesc
 https://book.hacktricks.xyz/windows/windows-local-privilege-escalation
 https://sushant747.gitbooks.io/total-oscp-guide/content/privilege_escalation_windows.html
+
+SQL Injection
+http://pentestmonkey.net/cheat-sheet/sql-injection/oracle-sql-injection-cheat-sheet
+
+LFI/RFI
+https://book.hacktricks.xyz/pentesting-web/file-inclusion
