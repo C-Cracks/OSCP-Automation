@@ -1,3 +1,8 @@
 smb-vuln scans via nmap
 ---
 If the version is 2.x or prior, it's worth trying https://www.exploit-db.com/exploits/10
+---
+https://github.com/roughiz/Symlink-Directory-Traversal-smb-manually
+
+We can create a symlink outside of the shared file, thus giving us the ability to access system files.
+  Could add ssh key to authorized_keys for example
