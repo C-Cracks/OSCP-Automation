@@ -1,0 +1,7 @@
+Default credentials: admin|admin
+
+File inclusion vulnerability:
+https://www.exploit-db.com/exploits/25971
+
+If we have admin access and file manager is active, there's the ability to upload PHP code disguised as a JPG (only by extension) and then use the rename function to execute.
+https://www.gitmemory.com/issue/CuppaCMS/CuppaCMS/7/551908376
