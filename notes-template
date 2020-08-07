@@ -1,29 +1,16 @@
 Open ports
 
-
-
-
-
-
-
-
+---
 Vulnerability Scans
 SMB | SMTP
 
+---
+Searchsploit
+Pay particular attention to versions
 
-
-
-
-
-
-
+---
 Scan Review
 enum4linux | nikto | nmap
-
-
-
-
-
 
 
 ---------------------
@@ -31,50 +18,22 @@ Web Server
 review http-curl.txt | manual check of pages for input points (check for SQL injection and XSS) | search for default credentials
 note anything interesting like emails, usernames etc | dirbuster if nothing interesting found immediately
 
-
-
-
-
-
-
+---
 FTP/SMB
-If anon access is allowed, do we have write privileges?
+If anon access is allowed, do we have write privileges? If we don't, are there any other interesting commands enabled? (e.g. append)
 
-
-
-
-
-
-
-
+---
 POP3 | IMAPD | SMTPD
 can users be enumerated?
 
-
-
-
-
-
-
-
+---
 SQL
 Accessible with default credentials?
 
-
-
-
-
-
-
-
-
+---
 Brute force
 To be attempted after all the above
 Only likely if a username has been discovered
-
-
-
-
 
 
 ----------------
