@@ -46,9 +46,9 @@ if [[ -z "$http" ]]; then
 	done
 fi
 	
-if [[ ! -z "$http" ]] && [[ ! -z "$https" ]]; then echo "Did not find a web server..." && web_server="false"; fi
+if [[ ! -z "$http" ]] && [[ ! -z "$https" ]]; then echo "Did not find a web server..."; fi
 
-if [[ "$web_server"!="false" ]] ; then
+if [[ -z "$http" ]] || [[ -z "$https" ]]; then
 	# curl found results
 
 	if [[ -z "$http" ]]; then
