@@ -3,6 +3,8 @@ A collection of personal scripts used in hacking excercises. Consider a majority
 There's also some notes on web app and OS vulnerabilties, in addition to pointers for useful commands etc.
 https://c-cracks.tumblr.com/
 
+Please note that bugs will come and go due to constant development- it's worth checking back if you've discovered a bug or addressing it yourself. 
+
 ## enum.sh
 * Performs an Nmap scan on the provided IP and further Wfuzz and Nikto scans on discovered web servers (per port found to be a web server)
 * Very basic in nature and I'm sure there's more intuitive tools out there; I'm building my own collection of scan automation tools.
