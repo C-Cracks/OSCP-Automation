@@ -6,3 +6,9 @@ https://github.com/roughiz/Symlink-Directory-Traversal-smb-manually
 
 We can create a symlink outside of the shared file, thus giving us the ability to access system files.
   Could add ssh key to authorized_keys for example
+---
+Samba 3.x after 3.5.0 and 4.x before 4.4.14, 4.5.x before 4.5.10, and 4.6.x before 4.6.4 does not restrict the file path when using Windows named pipes,
+which allows remote authenticated users to upload a shared library to a writable shared folder, and execute arbitrary code via a crafted named pipe
+(https://github.com/opsxcq/exploit-CVE-2017-7494)
+
+https://github.com/joxeankoret/CVE-2017-7494
