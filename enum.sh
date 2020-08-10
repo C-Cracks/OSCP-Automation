@@ -22,10 +22,9 @@ smb_p=( `cat ./nmap-scan-results.txt | grep -E -- "smb|microsoft-ds" | cut -d'/'
 # run enum4linux against target if target is linux
 
 if [[ ! $( echo "$smb_p" | grep "not found" ) ]] ; then
-	echo "" > /dev/null 2>&1 
-else
 	echo -e "\nRunning enum4linux..." ; timeout 300s enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt
-	echo -e "\nScanning for SMB vulnerabilities..." ; nmap -oN ./nmap-smb-vulns.txt --script smb-vuln* ${ip} -p ${smb_p} && cat nmap-smb-vulns.txt
+	echo -e "\nScanning for SMB vulnerabilities..." ; nmap -oN ./nmap-smb-vulns.txt --script smb-vuln* ${ip} -p 445 -Pn && cat nmap-smb-vulns.txt
+	echo "Check that the right port was scanned for SMB vulns."
 fi
 
 https=$( echo "${https_p[@]}" | grep "not found" )
@@ -129,7 +128,7 @@ if [[ $( echo "${open_ps}" | grep "ssh" ) ]] ; then echo -e "\nSSH present, chec
 if [[ $( echo "${open_ps}" | grep "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set, asreproast)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)\n  gettgt.py (pass the hash, requires valid user with specific permissions)" ; fi
 if [[ $( echo "${open_ps}" | grep "ldap" ) ]] ; then echo -e "\nActive Directory runs on this machine, relevant scripts:\n  getadusers.py (reveal stats about users if there's alot to enumerate- e.g. last logon)\n  ldap-search.nse- nmap (perform an LDAP search and return found objects such as SMB shares and users)" ; fi
 
-if [[ ! $( echo "$smb_p" | grep -v "not found" ) ]] ; then 
+if [[ ! $( echo "$smb_p" | grep "not found" ) ]] ; then 
 	users=$( cat linux-enum.txt | grep -E -- "user:\[|Local User" ) 
 	echo -e "Samba File Share present...Check ./linux-enum.txt for further information.\n  Check version for vulnerabilities and execute smb-vuln scripts with nmap (smb-vuln*)" 
 	echo -e "\nLocal users discovered by enum4linux:\n${users}" 
