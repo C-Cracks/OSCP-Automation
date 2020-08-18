@@ -1,0 +1,5 @@
+Default user: root@localhost
+
+v5:
+https://www.exploit-db.com/exploits/43853
+RCE via crypt PGP form in sysconfig
