@@ -1,0 +1,11 @@
+port 8009
+binary protocol that can proxy inbound requests from a web server through to an application server (https://en.wikipedia.org/wiki/Apache_JServ_Protocol)
+
+Ghostcat (there could be a password leak through web.xml or maybe theres a one unique to that server)
+https://github.com/00theway/Ghostcat-CNVD-2020-10487
+
+AJP fuzz (useful for testing if a conn can be established to p8009)
+https://github.com/doyensec/ajpfuzzer
+
+We can access the TomCat web server -if inaccessible by default- by configuring Apache to be a local Apache JServ Protocol (AJP) proxy
+https://ionize.com.au/exploiting-apache-tomcat-port-8009-using-apache-jserv-protocol/
