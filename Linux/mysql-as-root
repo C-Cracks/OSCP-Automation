@@ -1,0 +1,3 @@
+https://www.exploit-db.com/raw/1518
+if mysql runs as root, it can be possible to escalate privileges via the above
+  simply append a new root user to /etc/passwd. 
