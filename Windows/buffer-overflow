@@ -1,0 +1,3 @@
+buffer + EIP + offset + NOP + shellcode
+
+JMP ESP method seems to be very reliable-when used in the above scenario, the instuction results in a jump to our NOP sled.
