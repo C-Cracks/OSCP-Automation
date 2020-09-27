@@ -5,6 +5,9 @@ msf-pattern_create -l 2500
   use value in EIP at time of overflow in msf-pattern-offset
 msf-pattern_offset -l 2500 -q 33794332/bytes_in_eip
   shows precise position of EIP
+  
+Be careful of bad chars- even if all bytes to FF are on the stack, some may have been removed before the bytes are placed onto the stack.
+
 
 buffer + EIP + offset + NOP + shellcode
 
