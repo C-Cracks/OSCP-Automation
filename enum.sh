@@ -34,14 +34,18 @@ http=$( echo "${http_p[@]}" | grep "not found" )
 if [[ -z "$https" ]]; then 
 	echo "Found HTTPS, commencing with GoBuster..."
 	for i in "${https_p[@]}"; do
-		timeout 360 gobuster dir -r -u "https://$ip:$i/" -w /usr/share/wordlists/dirb/common.txt -t 40 -x .html,.txt > "https-gob$i.txt"
+		#timeout 360 dirb "https://$ip:$i/" /usr/share/wordlists/dirb/common.txt -x exts -o https-gob$i.txt
+		timeout 360 gobuster dir -r -u "https://$ip:$i/" -w /usr/share/wordlists/dirb/common.txt -t 40 -x .html,.txt > https-gob$i.txt
+		#timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ >> ./https-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.txt >> ./https-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.php >> ./https-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.log >> ./https-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt https://"$ip:${i}"/FUZZ.html >> ./https-gob${i}.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to https-gob${i}.txt." ; sleep 1
 	done
 fi
 	
 if [[ -z "$http" ]]; then 
 	echo "Found HTTP, commencing with GoBuster..."
 	for i in "${http_p[@]}"; do
-		timeout 360 gobuster dir -r -u "http://$ip:$i/" -w /usr/share/wordlists/dirb/common.txt -t 40 -x .html,.txt > "http-gob$i.txt"
+		timeout 360 gobuster dir -r -u "http://$ip:$i/" -w /usr/share/wordlists/dirb/common.txt -t 40 -x .html,.txt > http-gob$i.txt
+		#timeout 360 dirb "http://$ip:$i/" /usr/share/wordlists/dirb/common.txt -x exts -o http-gob$i.txt
+		#timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ >> ./http-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.txt >> ./http-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.php >> ./http-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.log >> ./http-gob${i}.txt && timeout 360 wfuzz -w /usr/share/wordlists/dirb/common.txt http://"$ip:${i}"/FUZZ.html >> ./http-gob${i}.txt && zenity --info --text="Wfuzz on ${ip}:${i} Complete. Results saved to http-gob${i}.txt." ; sleep 1
 	done
 fi
 	
@@ -49,11 +53,13 @@ if [[ ! -z "$http" ]] && [[ ! -z "$https" ]]; then echo "Did not find a web serv
 
 if [[ -z "$http" ]] || [[ -z "$https" ]]; then
 	# curl found results
+
 	if [[ -z "$http" ]]; then
 		for i in "${http_p[@]}"; do
 			sed -i '1,14d' http-gob${i}.txt
-			cat "http-gob$i.txt" | head -n -3 | cut -d'/' -f 2 | cut -d' ' -f 1 | sort -u > "./http-curl${i}.txt"
+			cat http-gob$i.txt | head -n -3 | cut -d'/' -f 2 | cut -d' ' -f 1 | sort -u > ./http-curl${i}.txt
 			sed -i '1,1d' http-curl${i}.txt
+			#cat http-gob${i}.txt | grep -v "404" | grep -o '".*"' | tr -d '"' | sort -u > ./http-curl${i}.txt
 			if [[ $( cat ./http-curl${i}.txt | wc -l ) -lt 1000 ]] && [[ $( cat ./http-curl${i}.txt | wc -l ) -gt 0 ]] ; then
 				while IFS="" read -r p || [ -n "$p" ] ; do
 					url=$( echo "$p" | tr -d "\n" )
@@ -109,8 +115,8 @@ echo -e "Open Ports:\n${open_ps}" > notes
 
 if [[ -z "$http" ]]; then
 	for i in "${http_p[@]}"; do
-		resp=$( cat "./http-gob${i}.txt" | grep "200" )
-		if [[ $( cat "./http-curl${i}.txt" | wc -l ) -lt 1000 ]] ; then
+		resp=$( cat ./http-gob${i}.txt | grep "200" )
+		if [[ $( cat ./http-curl${i}.txt | wc -l ) -lt 1000 ]] ; then
 			echo -e "\nHTTP files on port ${i} returning 200 response (see http-gob${i}.txt):\n${resp}\n" && if [[ $( cat ./http-curl${i}.txt | grep -E -- "login|admin|portal|robots" ) ]] ; then echo -e "Interesting Files on HTTP port ${i}:\n$( cat ./http-curl${i}.txt | grep -E -- 'login|admin|portal|robots' )" ; fi 
 		fi
 	done
@@ -118,8 +124,8 @@ fi
 
 if [[ -z "$https" ]]; then
 	for i in "${https_p[@]}"; do
-		resp=$( cat "./https-gob${i}.txt" | grep "200" )
-		if [[ $( cat "./https-curl${i}.txt" | wc -l ) -lt 1000 ]] ; then 
+		resp=$( cat ./https-gob${i}.txt | grep "200" )
+		if [[ $( cat ./https-curl${i}.txt | wc -l ) -lt 1000 ]] ; then 
 			echo -e "\nHTTPS files on port ${i} returning 200 response (see https-gob${i}.txt):\n${resp}\n" && if [[ $( cat ./https-curl${i}.txt | grep -E -- "login|admin|portal|robots" ) ]] ; then echo -e "Interesting Files on HTTPS port ${i}:\n$( cat ./https-curl${i}.txt | grep -E -- 'login|admin|portal|robots' )" ; fi
 		fi
 	done
@@ -135,7 +141,7 @@ if [[ $( echo "${open_ps}" | grep -i "ldap" ) ]] ; then echo -e "\nActive Direct
 if [[ $( echo "$smb_p" | grep -v "not found" ) ]] ; then 
 	users=$( cat linux-enum.txt | grep -E -- "user:\[|Local User" ) 
 	echo -e "Samba File Share present...Check ./linux-enum.txt for further information.\n  Check version for vulnerabilities and execute smb-vuln scripts with nmap (smb-vuln*)" 
-	echo -e "\nLocal users discovered by enum4linux:\n${users}" 
+	echo -e "\nLocal users discovered by enum4linux:" ; echo "${users}" 
 	echo "Discovered shares:" ; echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
 	if [[ $( grep "VULNERABLE" nmap-smb-vulns.txt ) ]] ; then echo "Known SMB vulns are present, check nmap-smb-vulns.txt" ; fi
 fi
