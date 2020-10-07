@@ -21,7 +21,7 @@ https_p=( `cat ./nmap-scan-results.txt | grep -i "ssl/http" | cut -d'/' -f 1 | g
 smb_p=( `cat ./nmap-scan-results.txt | grep -E -i -- "smb|microsoft-ds" | cut -d'/' -f 1 | grep -v [A-Za-z] || echo "SMB not found"` )
 # run enum4linux against target if target is linux
 
-if [[ $( echo "$smb_p" | grep -v "not found" ) ]]; then
+if [[ $( cat ./nmap-scan-results.txt | grep -E -i -- "smb|microsoft-ds" ) ]]; then
 	echo -e "\nRunning enum4linux..." ; timeout 300s enum4linux "${ip}" > linux-enum.txt ; cat linux-enum.txt
 	echo -e "\nScanning for SMB vulnerabilities..." ; nmap -oN ./nmap-smb-vulns.txt --script smb-vuln* ${ip} -pU:139,T:445 -Pn && cat nmap-smb-vulns.txt
 	echo "Check that the right port was scanned for SMB vulns."
@@ -138,10 +138,10 @@ if [[ $( echo "${open_ps}" | grep -i "ssh" ) ]] ; then echo -e "\nSSH present, c
 if [[ $( echo "${open_ps}" | grep -i "krb5" ) ]] ; then echo -e "\nKerberos authentication in place, relevant scripts:\n  getnpusers.py (check is users have dont require preauth set, asreproast)\n  getuserspns.py (kerberoast-harvest TGS tickets; requires knowledge of valid user)\n  kerbrute.py (brute force against Kerberos)\n  gettgt.py (pass the hash, requires valid user with specific permissions)" ; fi
 if [[ $( echo "${open_ps}" | grep -i "ldap" ) ]] ; then echo -e "\nActive Directory runs on this machine, relevant scripts:\n  getadusers.py (reveal stats about users if there's alot to enumerate- e.g. last logon)\n  ldap-search.nse- nmap (perform an LDAP search and return found objects such as SMB shares and users)" ; fi
 
-if [[ $( echo "$smb_p" | grep -v "not found" ) ]] ; then 
+if [[ $( cat ./nmap-scan-results.txt | grep -E -i -- "smb|microsoft-ds" ) ]] ; then 
 	users=$( cat linux-enum.txt | grep -E -- "user:\[|Local User" ) 
 	echo -e "Samba File Share present...Check ./linux-enum.txt for further information.\n  Check version for vulnerabilities and execute smb-vuln scripts with nmap (smb-vuln*)" 
-	echo -e "\nLocal users discovered by enum4linux:" ; echo "${users}" 
+	echo -e "\nLocal users discovered by enum4linux:" ; echo "${users}" ; echo "" 
 	echo "Discovered shares:" ; echo $( cat linux-enum.txt | grep "Mapping: OK, Listing: OK" )
 	if [[ $( grep "VULNERABLE" nmap-smb-vulns.txt ) ]] ; then echo "Known SMB vulns are present, check nmap-smb-vulns.txt" ; fi
 fi
