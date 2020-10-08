@@ -1,0 +1,2 @@
+For accessing an internal server, forward data sent to port 7000 (e.g.) to 8080
+socat tcp-listen:7000,reuseaddr,fork tcp:localhost:8080
