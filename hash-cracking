@@ -1,0 +1,12 @@
+mutate wordlist:
+sudo john --wordlist=/this/is/a/wordlist --rules --stdout > passes-mut
+
+md5 e.g:
+john --format=raw-md5 hashfilepath
+
+Cewl usage e.g:
+Scan to a depth of 2 (-d 2) and use a minimum word length of 5 (-m 5), save the words to a file (-w docswords.txt), targeting the given URL (https://example.com):
+cewl -d 2 -m 5 -w docswords.txt https://example.com
+
+cracking shadow files:
+https://null-byte.wonderhowto.com/how-to/crack-shadow-hashes-after-getting-root-linux-system-0186386/
