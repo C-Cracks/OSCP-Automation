@@ -12,3 +12,10 @@ Be careful of bad chars- even if all bytes to FF are on the stack, some may have
 buffer + EIP + offset + NOP + shellcode
 
 JMP ESP method seems to be very reliable-when used in the above scenario, the instuction results in a jump to our NOP sled.
+
+(from immunity)
+View DLLs used by exe:
+!mona modules
+
+Find JMP ESP in module:
+!mona find -s “\xff\xe4” -m “libspp.dll”
