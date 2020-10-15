@@ -1,0 +1,2 @@
+xfreerdp /u:[domain\]<username> /p:<password> /v:<IP>
+xfreerdp /u:[domain\]<username> /pth:<hash> /v:<IP>
